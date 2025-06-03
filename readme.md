@@ -4,11 +4,11 @@
 
 This monorepo contains an MCP server for agentic video editing. It also powers a front-end human user editor. It’s built and maintained by [HYE Partners](https://www.hyepartners.com).
 
+---
+
 ### Structure
 
 The project includes **three main servers**:
-
----
 
 ### 1. React Front-End (Vite)
 - **URL:** http://localhost:8080/
@@ -37,28 +37,31 @@ python main.py
 - **Run:**  
 python ollamarun.py
 
-*Suggested Models (must have function calling/tools):*
-    command-r7b:latest
-    devstral:latest
-    qwen3:latest
-    phi4-mini:latest
-    mistral-nemo:latest
-    llama3.1:8b
-    llama3.3:latest
-    qwen2.5-coder:latest
-    firefunction-v2:latest
-    llama4:scout
+**Suggested Models (must have function calling/tools):**
+- command-r7b:latest
+- devstral:latest
+- qwen3:latest
+- phi4-mini:latest
+- mistral-nemo:latest
+- llama3.1:8b
+- llama3.3:latest
+- qwen2.5-coder:latest
+- firefunction-v2:latest
+- llama4:scout
+
 ---
 
-June 3rd 2025
+## Roadmap Items
 
-Roadmap Items
+**June 3rd 2025**
+
 1. Better Timeline editing, Get Render working
 2. Dashboard Metrics / Run counts
 3. Connector to CrewAI
 4. MCP for some of the not-ffmpeg filters
 
 ---
+
 ## Usage
 
 - Free for any use: personal, research, or commercial.
