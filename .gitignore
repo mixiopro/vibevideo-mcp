@@ -1,0 +1,82 @@
+# === Node.js ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.next/
+out/
+.cache/
+coverage/
+
+# === Python ===
+*.py[cod]
+__pycache__/
+*.so
+*.egg-info/
+.eggs/
+.Python
+*.pyo
+*.pyd
+*.pdb
+
+# Python environments
+ffmpegbkend/
+.ffmpegbkend/
+.venv/
+venv/
+env/
+ENV/
+.venv*/
+venv*/
+env*/
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pyright
+typings/
+
+# === Environment files ===
+.env
+.env.*
+!.env.example
+
+# === VSCode ===
+.vscode/
+.history/
+
+# === Mac/Windows System Files ===
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+._*
+
+# === Logs ===
+*.log
+
+# === Misc ===
+*.swp
+*.swo
+*.bak
+*.tmp
+.idea/
+*.iml
+
+# === Test/Reports ===
+*.pytest_cache/
+htmlcov/
+.tox/
+
+# === Jupyter Notebooks ===
+.ipynb_checkpoints/
+
+ffmpeg-backend/vibe/
+ffmpeg-backend/video/
+ffmpeg-backend/*.mov

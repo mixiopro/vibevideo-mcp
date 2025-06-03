@@ -1,0 +1,351 @@
+[
+  {
+    "name": "generate_trim_command",
+    "description": "Trim a video file to the specified start and end times using ffmpeg.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "start": { "type": "string" },
+        "end": { "type": "string" }
+      },
+      "required": ["inputFilename", "start", "end"]
+    }
+  },
+  {
+    "name": "generate_framerate_command",
+    "description": "Change the framerate of a video file using ffmpeg.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "frameRate": { "type": "string" }
+      },
+      "required": ["inputFilename", "frameRate"]
+    }
+  },
+  {
+    "name": "generate_gifwebp_command",
+    "description": "Convert a video segment to a GIF or WebP.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "startTime": { "type": "string" },
+        "duration": { "type": "string" },
+        "format": { "type": "string", "enum": ["gif", "webp"] },
+        "scaleHeight": { "type": "integer" },
+        "fps": { "type": "integer" }
+      },
+      "required": ["inputFilename", "startTime", "duration", "format", "scaleHeight", "fps"]
+    }
+  },
+  {
+    "name": "generate_code_snippet",
+    "description": "Generate code snippet for a given command and language.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "command": { "type": "string" },
+        "language": { "type": "string" }
+      },
+      "required": ["command", "language"]
+    }
+  },
+  {
+    "name": "generate_audio_enhancement_command",
+    "description": "Generate audio enhancement command.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "selectedFilters": { "type": "array" },
+        "parameterValues": { "type": "object" },
+        "availableFiltersData": { "type": "object" }
+      },
+      "required": ["inputFilename", "selectedFilters", "parameterValues", "availableFiltersData"]
+    }
+  },
+  {
+    "name": "generate_audio_visualization_command",
+    "description": "Generate audio visualization command.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "type": { "type": "string" },
+        "size": { "type": "string" },
+        "mode": { "type": "string" }
+      },
+      "required": ["inputFilename", "type", "size", "mode"]
+    }
+  },
+  {
+    "name": "generate_batch_ffmpeg_commands",
+    "description": "Generate batch ffmpeg commands for multiple files and an operation.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "filenames": { "type": "array", "items": { "type": "string" } },
+        "operation": { "type": "string" }
+      },
+      "required": ["filenames", "operation"]
+    }
+  },
+  {
+    "name": "generate_bitstream_extract_command",
+    "description": "Extract bitstream from video or audio file.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "streamType": { "type": "string" }
+      },
+      "required": ["inputFilename", "streamType"]
+    }
+  },
+  {
+    "name": "generate_capture_command",
+    "description": "Generate command to capture video/audio from device.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "deviceValue": { "type": "string" },
+        "resolution": { "type": "string" },
+        "framerate": { "type": "string" }
+      },
+      "required": ["deviceValue", "resolution", "framerate"]
+    }
+  },
+  {
+    "name": "generate_channel_mix_command",
+    "description": "Generate command to mix audio channels.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "channels": { "type": "string" }
+      },
+      "required": ["inputFilename", "channels"]
+    }
+  },
+  {
+    "name": "generate_filterlab_command",
+    "description": "Generate a command using the Filter Lab (multiple video/audio filters).",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "filters": { "type": "array" },
+        "parameterValues": { "type": "object" },
+        "availableFiltersData": { "type": "object" }
+      },
+      "required": ["inputFilename", "filters", "parameterValues", "availableFiltersData"]
+    }
+  },
+  {
+    "name": "generate_livestream_command",
+    "description": "Generate a livestreaming command.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "rtmpUrl": { "type": "string" }
+      },
+      "required": ["inputFilename", "rtmpUrl"]
+    }
+  },
+  {
+    "name": "generate_ffprobe_command",
+    "description": "Analyze a media file with ffprobe.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" }
+      },
+      "required": ["inputFilename"]
+    }
+  },
+  {
+    "name": "generate_join_command_example",
+    "description": "Get an example command to join multiple media files.",
+    "parameters": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "generate_convert_command",
+    "description": "Convert a media file to another format or codec.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "format": { "type": "string" },
+        "codec": { "type": "string" }
+      },
+      "required": ["inputFilename", "format", "codec"]
+    }
+  },
+  {
+    "name": "generate_metadata_command",
+    "description": "Edit/add metadata for a media file.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "metadata": { "type": "object" }
+      },
+      "required": ["inputFilename", "metadata"]
+    }
+  },
+  {
+    "name": "generate_motion_interpolation_command",
+    "description": "Generate a command for video motion interpolation.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "fps": { "type": "string" },
+        "mode": { "type": "string" }
+      },
+      "required": ["inputFilename", "fps", "mode"]
+    }
+  },
+  {
+    "name": "generate_noise_reduction_command",
+    "description": "Apply noise reduction to a media file.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "filterType": { "type": "string" },
+        "strength": { "type": "string" }
+      },
+      "required": ["inputFilename", "filterType", "strength"]
+    }
+  },
+  {
+    "name": "generate_silence_detect_command",
+    "description": "Detect silence in an audio or video file.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "thresholdDb": { "type": "string" },
+        "minDuration": { "type": "string" }
+      },
+      "required": ["inputFilename", "thresholdDb", "minDuration"]
+    }
+  },
+  {
+    "name": "generate_segment_hls_command",
+    "description": "Segment video/audio for HLS streaming.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "segmentDuration": { "type": "string" }
+      },
+      "required": ["inputFilename", "segmentDuration"]
+    }
+  },
+  {
+    "name": "generate_speed_change_command",
+    "description": "Change playback speed of media.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "speed": { "type": "string" }
+      },
+      "required": ["inputFilename", "speed"]
+    }
+  },
+  {
+    "name": "generate_stream_extraction_command",
+    "description": "Extract streams (audio, video, etc) from a media file.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "extractionType": { "type": "string" },
+        "outputFormat": { "type": "string" }
+      },
+      "required": ["inputFilename", "extractionType", "outputFormat"]
+    }
+  },
+  {
+    "name": "generate_subtitles_command",
+    "description": "Manage subtitles for a media file.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "subtitleFilename": { "type": "string" },
+        "actionType": { "type": "string" }
+      },
+      "required": ["inputFilename", "subtitleFilename", "actionType"]
+    }
+  },
+  {
+    "name": "generate_thumbnail_command",
+    "description": "Generate thumbnail(s) from a media file.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "tab": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "cols": { "type": "integer" },
+        "rows": { "type": "integer" },
+        "multipleSheets": { "type": "boolean" },
+        "interval": { "type": "string" },
+        "duration": { "type": "string" }
+      },
+      "required": ["inputFilename", "tab", "timestamp", "cols", "rows", "multipleSheets", "interval", "duration"]
+    }
+  },
+  {
+    "name": "generate_video_resizer_command",
+    "description": "Resize a video file to given resolution or custom dimensions.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "resolution": { "type": "string" },
+        "customWidth": { "type": "string" },
+        "customHeight": { "type": "string" }
+      },
+      "required": ["inputFilename", "resolution", "customWidth", "customHeight"]
+    }
+  },
+  {
+    "name": "generate_video_stabilizer_command",
+    "description": "Apply stabilization to a video file.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "strength": { "type": "string" }
+      },
+      "required": ["inputFilename", "strength"]
+    }
+  },
+  {
+    "name": "generate_watermark_remover_command",
+    "description": "Remove a watermark from a video.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "inputFilename": { "type": "string" },
+        "x": { "type": "string" },
+        "y": { "type": "string" },
+        "width": { "type": "string" },
+        "height": { "type": "string" },
+        "filterType": { "type": "string" }
+      },
+      "required": ["inputFilename", "x", "y", "width", "height", "filterType"]
+    }
+  }
+]

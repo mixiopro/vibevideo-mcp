@@ -1,0 +1,892 @@
+[
+  {
+    "name": "generateAudioVisualizationCommand",
+    "route": "/api/generate-audio-visualization-command",
+    "description": "Generate an FFmpeg command for audio visualization using filters like showfreqs or aspectrum.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "The name of the input file."
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "required": true,
+        "enum": ["showfreqs", "aspectrum"],
+        "description": "The type of visualization to apply."
+      },
+      {
+        "name": "size",
+        "type": "string",
+        "required": true,
+        "description": "The output video size, e.g., '1280x720'."
+      },
+      {
+        "name": "mode",
+        "type": "string",
+        "required": true,
+        "description": "Visualization mode, e.g., 'line', 'bar', 'dot', etc."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command string, or empty string if parameters are invalid."
+    }
+  },
+  {
+  "name": "generateCodeSnippet",
+  "route": "/api/generate-code-snippet",
+  "description": "Generate a code snippet for running a shell command in the specified language.",
+  "parameters": [
+    { "name": "command", "type": "string", "required": true, "description": "The shell command to wrap." },
+    { "name": "language", "type": "string", "required": true, "description": "The target programming language (bash, python, nodejs, go)." }
+  ],
+  "returns": {
+    "type": "string",
+    "description": "A code snippet string for the requested language."
+  }
+},
+{
+  "name": "generateAudioEnhancementCommand",
+  "route": "/api/generate-audio-enhancement-command",
+  "description": "Apply one or more audio filters (and optionally audio→video visualizers) to an input file. Uses the available filters registry to look up all valid filter parameters and options.",
+  "parameters": [
+    {
+      "name": "inputFilename",
+      "type": "string",
+      "required": true,
+      "description": "The name of the input audio or video file."
+    },
+    {
+      "name": "selectedFilters",
+      "type": "array",
+      "items": { "type": "string" },
+      "required": true,
+      "description": "Array of filter keys (values) selected by the user, e.g. ['loudnorm', 'showfreqs']"
+    },
+    {
+      "name": "parameterValues",
+      "type": "object",
+      "required": false,
+      "description": "Map from filter key to parameter objects. E.g. { loudnorm: { I: -16, TP: -1.5 }, ... }"
+    },
+    {
+      "name": "availableFiltersData",
+      "type": "array",
+      "required": true,
+      "description": "The registry of all known filters (typically passed as-is from availableAudioFiltersData)."
+    }
+  ],
+  "returns": {
+    "type": "string",
+    "description": "A shell string containing the generated ffmpeg command."
+  }
+},
+{
+  "name": "generateBatchFFmpegCommands",
+  "route": "/api/generate-batch-ffmpeg-commands",
+  "description": "Generate FFmpeg command lines for a batch of files and a selected batch operation (convert or resize multiple files in one request).",
+  "parameters": [
+    {
+      "name": "filenames",
+      "type": "array",
+      "items": { "type": "string" },
+      "required": true,
+      "description": "Array of file names to be processed (strings, not File objects)."
+    },
+    {
+      "name": "operation",
+      "type": "string",
+      "required": true,
+      "description": "Batch operation to apply to all files. Valid values: 'convert_mp4', 'convert_mp3', 'resize_720p'."
+    }
+  ],
+  "returns": {
+    "type": "array",
+    "items": { "type": "string" },
+    "description": "Array of generated FFmpeg command strings, one per input file."
+  }
+},
+{
+  "name": "generateBitstreamExtractCommand",
+  "route": "/api/generate-bitstream-extract-command",
+  "description": "Generate an FFmpeg command to extract a specific bitstream (video, audio, or subtitles) from a media file.",
+  "parameters": [
+    {
+      "name": "inputFilename",
+      "type": "string",
+      "required": true,
+      "description": "The name of the file to extract from."
+    },
+    {
+      "name": "streamType",
+      "type": "string",
+      "enum": ["video", "audio", "subtitles"],
+      "required": true,
+      "description": "Type of stream to extract: 'video', 'audio', or 'subtitles'."
+    }
+  ],
+  "returns": {
+    "type": "string",
+    "description": "The generated FFmpeg command string, or an empty string if parameters are invalid."
+  }
+},
+{
+  "name": "generateCaptureCommand",
+  "route": "/api/generate-capture-command",
+  "description": "Generate an FFmpeg command to capture video (and optionally audio) from a device or screen.",
+  "parameters": [
+    {
+      "name": "deviceValue",
+      "type": "string",
+      "required": true,
+      "description": "Device value string, e.g., 'avfoundation,3:none' for macOS screen."
+    },
+    {
+      "name": "resolution",
+      "type": "string",
+      "required": true,
+      "description": "Desired capture resolution, e.g., '1920x1080'."
+    },
+    {
+      "name": "framerate",
+      "type": "string",
+      "required": true,
+      "description": "Desired frame rate, e.g., '30'."
+    }
+  ],
+  "returns": {
+    "type": "string",
+    "description": "FFmpeg command string to start capture. Stopping the capture is handled by terminating the running process (SIGINT/kill) from the client."
+  }
+},
+{
+  "name": "generateChannelMixCommand",
+  "route": "/api/generate-channel-mix-command",
+  "description": "Generate an FFmpeg command to change the audio channel count of a file (mono, stereo, 5.1, etc).",
+  "parameters": [
+    {
+      "name": "inputFilename",
+      "type": "string",
+      "required": true,
+      "description": "Input audio or video file name, e.g., 'input.wav'."
+    },
+    {
+      "name": "channels",
+      "type": "string or number",
+      "required": true,
+      "description": "Desired number of output audio channels (e.g., '1' for mono, '2' for stereo, '6' for 5.1)."
+    }
+  ],
+  "returns": {
+    "type": "string",
+    "description": "FFmpeg command string that creates a new file with the specified channel count."
+  }
+},
+{
+  "name": "generateFilterLabCommand",
+  "route": "/api/generate-filterlab-command",
+  "description": "Generate an FFmpeg command to apply one or more advanced video/audio filters. Supports hundreds of FFmpeg filters (from a dynamic catalog). Handles both simple and complex (filter_complex) operations, including audio-to-video visualization.",
+  "parameters": [
+    {
+      "name": "inputFilename",
+      "type": "string",
+      "required": true,
+      "description": "Name of the input file to process, e.g., 'input.mp4'."
+    },
+    {
+      "name": "filters",
+      "type": "array[string]",
+      "required": true,
+      "description": "List of filter values (from filter catalog) to apply. Each must be present in the availableFilters list."
+    },
+    {
+      "name": "parameterValues",
+      "type": "object",
+      "required": false,
+      "description": "Per-filter parameter overrides: { [filterValue]: { [paramName]: value } }."
+    },
+    {
+      "name": "availableFilters",
+      "type": "array",
+      "required": true,
+      "description": "Array of filter category objects (typically imported from ffmpegFilters.json)."
+    }
+  ],
+  "returns": {
+    "type": "string",
+    "description": "FFmpeg command string with correct -vf, -af, or -filter_complex clauses for all selected filters and their parameter values."
+  },
+  "notes": [
+    "Supports hundreds of filters; use the /api/list-filters and /api/search-filters endpoints to discover available options.",
+    "Automatically handles audio-to-video visualizations (e.g., showfreqs, aspectrum) and multi-stage filtergraphs.",
+    "Parameter values are resolved by filter definition defaults if not provided explicitly."
+  ],
+  "example": {
+    "call": "generateFilterLabCommand('input.mp4', ['hue', 'volume'], { hue: { s: 0.5, h: 30 }, volume: { volume: 2 } }, availableFiltersData)",
+    "output": "ffmpeg -i \"input.mp4\" -vf \"hue=s=0.5:h=30\" -af \"volume=2\" -c:v libx264 -c:a aac -strict experimental \"input_filtered.mp4\""
+  }
+},
+  {
+    "name": "generateFrameRateCommand",
+    "route": "/api/generate-framerate-command",
+    "description": "Generate an FFmpeg command to change the video frame rate (e.g., from 30fps to 24fps). Always re-encodes for compatibility.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Original file name, e.g., 'input.mp4'."
+      },
+      {
+        "name": "frameRate",
+        "type": "string|number",
+        "required": true,
+        "description": "Target frame rate (e.g., '24', '30')."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command to produce a new file with the requested frame rate."
+    },
+    "example": {
+      "call": "generateFrameRateCommand('input.mp4', 24)",
+      "output": "ffmpeg -i \"input.mp4\" -r 24 -c:v libx264 -c:a aac -strict experimental \"input_24fps.mp4\""
+    }
+  },
+  {
+    "name": "generateGifWebpCommand",
+    "route": "/api/generate-gifwebp-command",
+    "description": "Generate FFmpeg commands to convert video segments to GIF (palette workflow) or animated WebP.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Input file, e.g., 'video.mp4'."
+      },
+      {
+        "name": "startTime",
+        "type": "string",
+        "required": false,
+        "description": "Clip start time (e.g., '00:00:03' or '3')."
+      },
+      {
+        "name": "duration",
+        "type": "string",
+        "required": false,
+        "description": "Duration in seconds (e.g., '8' or '00:00:08')."
+      },
+      {
+        "name": "format",
+        "type": "\"gif\"|\"webp\"",
+        "required": true,
+        "description": "\"gif\" for GIF output, \"webp\" for animated WebP."
+      },
+      {
+        "name": "scaleHeight",
+        "type": "string|number",
+        "required": true,
+        "description": "Output height in pixels; width auto-calculated to maintain aspect."
+      },
+      {
+        "name": "fps",
+        "type": "string|number",
+        "required": true,
+        "description": "Output frames per second."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "For GIF, a two-step workflow string (palette generation, then gif encoding). For WebP, a single FFmpeg command."
+    },
+    "example": {
+      "call": "generateGifWebpCommand('video.mp4', '00:00:05', '10', 'gif', 320, 12)",
+      "output": "## Step 1: Generate Palette\nffmpeg -ss 00:00:05 -t 10 -i \"video.mp4\" -vf \"fps=12,scale=-1:320:flags=lanczos,palettegen\" -y \"video_palette.png\"\n\n## Step 2: Create GIF using Palette\nffmpeg -ss 00:00:05 -t 10 -i \"video.mp4\" -i \"video_palette.png\" -filter_complex \"fps=12,scale=-1:320:flags=lanczos[x];[x][1:v]paletteuse\" -y \"video_clip.gif\""
+    }
+  },
+  {
+    "name": "generateLiveStreamCommand",
+    "route": "/api/generate-livestream-command",
+    "description": "Generate FFmpeg command for streaming a local media file to an RTMP endpoint.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Name of the media file to stream, e.g., 'myvideo.mp4'."
+      },
+      {
+        "name": "rtmpUrl",
+        "type": "string",
+        "required": true,
+        "description": "RTMP server URL, e.g., 'rtmp://my-server/live/key'."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command for real-time file streaming."
+    },
+    "example": {
+      "call": "generateLiveStreamCommand('myvideo.mp4', 'rtmp://localhost/live/test')",
+      "output": "ffmpeg -re -i \"myvideo.mp4\" -c copy -f flv \"rtmp://localhost/live/test\""
+    }
+  },
+    {
+    "name": "generateFFprobeCommand",
+    "route": "/api/generate-ffprobe-command",
+    "description": "Generate an ffprobe command to analyze a media file and show stream/container info.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Path or filename of the media file (e.g., 'movie.mp4')."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFprobe command string."
+    },
+    "example": {
+      "call": "generateFFprobeCommand('movie.mp4')",
+      "output": "ffprobe -v error -show_format -show_streams \"movie.mp4\""
+    }
+  },
+  {
+    "name": "generateTrimCommand",
+    "route": "/api/generate-trim-command",
+    "description": "Generate FFmpeg command to trim a media file between optional start and end points, using stream copy for speed.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Input file, e.g., 'movie.mp4'."
+      },
+      {
+        "name": "start",
+        "type": "string",
+        "required": false,
+        "description": "Start time ('00:00:10' or seconds, optional)."
+      },
+      {
+        "name": "end",
+        "type": "string",
+        "required": false,
+        "description": "End time ('00:00:25' or seconds, optional)."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command to trim the input file."
+    },
+    "example": {
+      "call": "generateTrimCommand('movie.mp4', '00:00:10', '00:00:25')",
+      "output": "ffmpeg -i \"movie.mp4\" -ss 00:00:10 -to 00:00:25 -c copy \"movie_trimmed.mp4\""
+    }
+  },
+  {
+    "name": "generateJoinCommandExample",
+    "route": "/api/generate-join-command-example",
+    "description": "Show an example FFmpeg command for joining/concatenating multiple media files (using concat demuxer).",
+    "parameters": [],
+    "returns": {
+      "type": "string",
+      "description": "Example FFmpeg join command (not a runnable tool, for display/help only)."
+    },
+    "example": {
+      "call": "generateJoinCommandExample()",
+      "output": "ffmpeg -y -f concat -safe 0 -i file_list.txt -c:v libx264 -c:a aac -movflags +faststart output.mp4"
+    }
+  },
+  {
+    "name": "generateConvertCommand",
+    "route": "/api/generate-convert-command",
+    "description": "Generate FFmpeg command for converting a media file to a new format and/or codec.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Original file name (e.g., 'myvideo.mov')."
+      },
+      {
+        "name": "format",
+        "type": "string",
+        "required": true,
+        "description": "Output format, e.g., 'mp4', 'mp3', 'gif', etc."
+      },
+      {
+        "name": "codec",
+        "type": "string",
+        "required": false,
+        "description": "Optional codec, e.g., 'libx264', 'aac', 'libmp3lame'."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command for the conversion task."
+    },
+    "example": {
+      "call": "generateConvertCommand('myvideo.mov', 'mp4', 'libx264')",
+      "output": "ffmpeg -i \"myvideo.mov\" -c:v libx264 -c:a copy \"myvideo.mp4\""
+    }
+  },
+  {
+    "name": "generateMetadataCommand",
+    "route": "/api/generate-metadata-command",
+    "description": "Generate FFmpeg command to update title, artist, or album metadata on an audio/video file.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Original file name (e.g., 'input.mp3')."
+      },
+      {
+        "name": "metadata",
+        "type": "object",
+        "required": true,
+        "description": "Metadata object (e.g., { title: 'Song', artist: 'Artist', album: 'Album' })."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command to update the metadata."
+    },
+    "example": {
+      "call": "generateMetadataCommand('track01.mp3', { title: 'New Title', artist: 'New Artist', album: 'New Album' })",
+      "output": "ffmpeg -i \"track01.mp3\" -c copy -metadata title=\"New Title\" -metadata artist=\"New Artist\" -metadata album=\"New Album\" \"track01_metadata.mp3\""
+    }
+  },
+  {
+    "name": "generateMotionInterpolationCommand",
+    "route": "/api/generate-motion-interpolation-command",
+    "description": "Generate FFmpeg command for frame interpolation (slow motion/smooth motion) using the minterpolate filter.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Original file name (e.g., 'video.mp4')."
+      },
+      {
+        "name": "fps",
+        "type": "string|number",
+        "required": true,
+        "description": "Target output frame rate (e.g., '60')."
+      },
+      {
+        "name": "mode",
+        "type": "string",
+        "required": true,
+        "description": "Interpolation mode (e.g., 'blend', 'dup')."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command with minterpolate filter."
+    },
+    "example": {
+      "call": "generateMotionInterpolationCommand('sample.mov', '120', 'blend')",
+      "output": "ffmpeg -i \"sample.mov\" -vf \"minterpolate=fps=120:mi_mode=blend\" -c:a copy \"sample_120fps_blend.mov\""
+    }
+  },
+  {
+    "name": "generateNoiseReductionCommand",
+    "route": "/api/generate-noise-reduction-command",
+    "description": "Generate FFmpeg command for video noise reduction using hqdn3d or nlmeans filter.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Original file name (e.g., 'video.mp4')."
+      },
+      {
+        "name": "filterType",
+        "type": "string",
+        "required": true,
+        "description": "Type of filter ('hqdn3d' or 'nlmeans')."
+      },
+      {
+        "name": "strength",
+        "type": "number",
+        "required": true,
+        "description": "Strength (0.0–1.0, mapped to filter range)."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command for noise reduction."
+    },
+    "example": {
+      "call": "generateNoiseReductionCommand('sample.mp4', 'hqdn3d', 0.6)",
+      "output": "ffmpeg -i \"sample.mp4\" -vf \"hqdn3d=6.00:6.00:6.00:6.00\" -c:a copy \"sample_denoised.mp4\""
+    }
+  },
+{
+  "name": "generateSceneDetectCommand",
+  "route": "/api/generate-scene-detect-command",
+  "description": "Generate FFmpeg command for detecting scene changes in video. Output is sent to stderr/stdout; parses frame/time/scene data.",
+  "parameters": [
+    {
+      "name": "inputFilename",
+      "type": "string",
+      "required": true,
+      "description": "Original video file name (e.g. 'movie.mp4')."
+    },
+    {
+      "name": "sensitivity",
+      "type": "number",
+      "required": true,
+      "description": "Scene sensitivity (0.0 = all frames, 1.0 = only biggest scene changes). Typical: 0.4–0.6."
+    }
+  ],
+  "returns": {
+    "type": "string",
+    "description": "FFmpeg command for running scene detection."
+  },
+  "example": {
+    "call": "generateSceneDetectCommand('video.mp4', 0.5)",
+    "output": "ffmpeg -i \"video.mp4\" -vf \"select='gt(scene,0.50)',showinfo\" -f null -"
+  }
+},
+  {
+    "name": "generateSegmentHlsCommand",
+    "route": "/api/generate-segment-hls-command",
+    "description": "Generate FFmpeg command to segment a media file into HLS (HTTP Live Streaming) playlist (.m3u8) and segment files.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Original file name (e.g., 'video.mp4')."
+      },
+      {
+        "name": "segmentDuration",
+        "type": "number or string",
+        "required": true,
+        "description": "Segment duration in seconds (e.g., 10)."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command for HLS segmentation."
+    },
+    "example": {
+      "call": "generateSegmentHlsCommand('movie.mp4', 8)",
+      "output": "ffmpeg -i \"movie.mp4\" -c copy -hls_time 8 -hls_list_size 0 -f hls \"movie.m3u8\""
+    }
+  },
+  {
+    "name": "generateSpeedChangeCommand",
+    "route": "/api/generate-speed-change-command",
+    "description": "Generate FFmpeg command to change playback speed for video and audio. Output is always MP4. Handles fractional and multiple audio tempo steps as needed.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Input file name (e.g., 'video.mp4')."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "required": true,
+        "description": "Playback speed multiplier (e.g., 0.5 for half speed, 2.0 for double speed)."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command to change speed of both video and audio."
+    },
+    "example": {
+      "call": "generateSpeedChangeCommand('clip.mp4', 2.0)",
+      "output": "ffmpeg -fflags +genpts -i \"clip.mp4\" -filter_complex \"[0:v]setpts=0.500*PTS[v];[0:a]aresample=async=1,atempo=2.000[a]\" -map \"[v]\" -map \"[a]\" -c:v libx264 -c:a aac -ar 48000 -movflags +faststart -shortest \"clip_2p00x.mp4\""
+    }
+  },
+  {
+    "name": "generateStreamExtractionCommand",
+    "route": "/api/generate-stream-extraction-command",
+    "description": "Generate FFmpeg command to extract either the audio or video stream from a media file. Output format must match stream type.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Original file name (e.g., 'movie.mp4')."
+      },
+      {
+        "name": "extractionType",
+        "type": "\"audio\" | \"video\"",
+        "required": true,
+        "description": "Extraction type: 'audio' or 'video'."
+      },
+      {
+        "name": "outputFormat",
+        "type": "string",
+        "required": true,
+        "description": "Output format (e.g., 'mp3', 'aac', 'wav' for audio; 'mp4', 'mkv' for video)."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command for stream extraction."
+    },
+    "example": {
+      "call": "generateStreamExtractionCommand('movie.mp4', 'audio', 'mp3')",
+      "output": "ffmpeg -i \"movie.mp4\" -vn -acodec libmp3lame -ab 192k \"movie_extracted.mp3\""
+    }
+  },
+    {
+    "name": "generateSubtitlesCommand",
+    "route": "/api/generate-subtitles-command",
+    "description": "Generate FFmpeg command for subtitle actions: burn-in (overlay), extract (.srt), or remove all subtitles from a video file.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Video file name (e.g., 'movie.mp4')."
+      },
+      {
+        "name": "subtitleFilename",
+        "type": "string or null",
+        "required": false,
+        "description": "Subtitle file name if burning in (e.g., 'movie.srt'). Required only for 'burn-in'."
+      },
+      {
+        "name": "actionType",
+        "type": "'burn-in' | 'extract' | 'remove'",
+        "required": true,
+        "description": "Type of subtitle operation: 'burn-in', 'extract', or 'remove'."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command for subtitle operation."
+    },
+    "examples": [
+      {
+        "call": "generateSubtitlesCommand('movie.mp4', 'movie.srt', 'burn-in')",
+        "output": "ffmpeg -i \"movie.mp4\" -vf subtitles='movie.srt' \"movie_burned-in.mp4\""
+      },
+      {
+        "call": "generateSubtitlesCommand('movie.mp4', null, 'extract')",
+        "output": "ffmpeg -i \"movie.mp4\" -map 0:s:0 \"movie.srt\""
+      },
+      {
+        "call": "generateSubtitlesCommand('movie.mp4', null, 'remove')",
+        "output": "ffmpeg -i \"movie.mp4\" -c copy -sn \"movie_no-subs.mp4\""
+      }
+    ]
+  },
+  {
+    "name": "generateThumbnailCommand",
+    "route": "/api/generate-thumbnail-command",
+    "description": "Generate FFmpeg command to extract a video thumbnail (single) or create a contact sheet (grid or multiple).",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Source video file (e.g., 'video.mp4')."
+      },
+      {
+        "name": "tab",
+        "type": "'single' | 'sheet'",
+        "required": true,
+        "description": "'single' for one thumbnail, 'sheet' for contact sheet."
+      },
+      {
+        "name": "timestamp",
+        "type": "string",
+        "required": false,
+        "description": "Timestamp for single thumbnail (e.g., '00:01:05'). Required for 'single'."
+      },
+      {
+        "name": "cols",
+        "type": "string",
+        "required": false,
+        "description": "Columns in contact sheet (for 'sheet')."
+      },
+      {
+        "name": "rows",
+        "type": "string",
+        "required": false,
+        "description": "Rows in contact sheet (for 'sheet')."
+      },
+      {
+        "name": "multipleSheets",
+        "type": "boolean",
+        "required": false,
+        "description": "If true, generate multiple sheets at interval (for 'sheet')."
+      },
+      {
+        "name": "interval",
+        "type": "string",
+        "required": false,
+        "description": "Interval between thumbnails in seconds (for 'sheet', multiple sheets only)."
+      },
+      {
+        "name": "duration",
+        "type": "number or null",
+        "required": false,
+        "description": "Video duration (required for evenly spaced single sheet)."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command for thumbnail or contact sheet."
+    },
+    "examples": [
+      {
+        "call": "generateThumbnailCommand('video.mp4', 'single', '00:01:05', '', '', false, '', null)",
+        "output": "ffmpeg -i \"video.mp4\" -ss 00:01:05 -vframes 1 \"video_thumb_00-01-05.png\""
+      },
+      {
+        "call": "generateThumbnailCommand('video.mp4', 'sheet', '', '4', '4', false, '', 120)",
+        "output": "ffmpeg -i \"video.mp4\" -vf \"thumbnail=16,tile=4x4\" -frames:v 1 \"video_sheet_4x4.png\""
+      },
+      {
+        "call": "generateThumbnailCommand('video.mp4', 'sheet', '', '4', '4', true, '10', null)",
+        "output": "ffmpeg -i \"video.mp4\" -vf \"select='gte(t,n*10.00)',tile=4x4\" \"video_sheet_%02d.png\""
+      }
+    ]
+  },
+    {
+    "name": "generateVideoResizerCommand",
+    "route": "/api/generate-video-resizer-command",
+    "description": "Generate an FFmpeg command for resizing/scaling a video to a standard or custom resolution.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Source video file (e.g., 'video.mp4')."
+      },
+      {
+        "name": "resolution",
+        "type": "string",
+        "required": true,
+        "description": "Target resolution (e.g., '1920x1080', 'custom', etc.). Use 'custom' to specify width/height."
+      },
+      {
+        "name": "customWidth",
+        "type": "string",
+        "required": false,
+        "description": "Custom width (used if resolution is 'custom')."
+      },
+      {
+        "name": "customHeight",
+        "type": "string",
+        "required": false,
+        "description": "Custom height (used if resolution is 'custom')."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command for video resizing."
+    },
+    "examples": [
+      {
+        "call": "generateVideoResizerCommand('video.mp4', '1280x720')",
+        "output": "ffmpeg -i \"video.mp4\" -vf scale=1280x720 -c:v libx264 -c:a aac -strict experimental \"video_resized.mp4\""
+      },
+      {
+        "call": "generateVideoResizerCommand('video.mp4', 'custom', '800', '600')",
+        "output": "ffmpeg -i \"video.mp4\" -vf scale=800x600 -c:v libx264 -c:a aac -strict experimental \"video_resized.mp4\""
+      }
+    ]
+  },
+  {
+    "name": "generateVideoStabilizerCommand",
+    "route": "/api/generate-video-stabilizer-command",
+    "description": "Generate multi-step FFmpeg commands for stabilizing a video using vidstab (analyze, then apply transform).",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Source video file (e.g., 'video.mp4')."
+      },
+      {
+        "name": "strength",
+        "type": "'low' | 'medium' | 'high'",
+        "required": true,
+        "description": "Stabilization strength. Affects shakiness/accuracy/smoothing."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "Markdown-style string: Step 1 (analyze), Step 2 (transform)."
+    },
+    "examples": [
+      {
+        "call": "generateVideoStabilizerCommand('video.mp4', 'medium')",
+        "output": "## Step 1: Analyze (creates vidstab.log)\nffmpeg -i \"video.mp4\" -vf \"vidstabdetect=shakiness=8:accuracy=8\" -f null -\n\n## Step 2: Stabilize (uses vidstab.log)\nffmpeg -i \"video.mp4\" -vf \"vidstabtransform=smoothing=10\" -c:a copy \"video_stabilized.mp4\""
+      }
+    ]
+  },
+  {
+    "name": "generateWatermarkRemoverCommand",
+    "route": "/api/generate-watermark-remover-command",
+    "description": "Generate an FFmpeg command to remove a logo/watermark using delogo or inpaint filter.",
+    "parameters": [
+      {
+        "name": "inputFilename",
+        "type": "string",
+        "required": true,
+        "description": "Source video file (e.g., 'video.mp4')."
+      },
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "description": "X coordinate (top-left) of the watermark region."
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true,
+        "description": "Y coordinate (top-left) of the watermark region."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true,
+        "description": "Width of the watermark region."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": true,
+        "description": "Height of the watermark region."
+      },
+      {
+        "name": "filterType",
+        "type": "'delogo' | 'inpaint'",
+        "required": true,
+        "description": "Removal filter: 'delogo' or 'inpaint'."
+      }
+    ],
+    "returns": {
+      "type": "string",
+      "description": "FFmpeg command for watermark/logo removal."
+    },
+    "examples": [
+      {
+        "call": "generateWatermarkRemoverCommand('video.mp4', 100, 50, 200, 80, 'delogo')",
+        "output": "ffmpeg -i \"video.mp4\" -vf \"delogo=x=100:y=50:w=200:h=80:show=0\" -c:a copy \"video_no_watermark.mp4\""
+      },
+      {
+        "call": "generateWatermarkRemoverCommand('video.mp4', 100, 50, 200, 80, 'inpaint')",
+        "output": "ffmpeg -i \"video.mp4\" -vf \"inpaint=x=100:y=50:w=200:h=80:radius=15:iterations=5\" -c:a copy \"video_no_watermark.mp4\""
+      }
+    ]
+  }
+]

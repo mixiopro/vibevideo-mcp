@@ -1,0 +1,1693 @@
+[
+    {
+      "category": "Volume & Normalization",
+      "filters": [
+        {
+          "label": "Volume",
+          "value": "volume",
+          "description": "Adjusts audio volume by linear factor, decibels, or expression.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"volume=1.5\" output.wav",
+            "ffmpeg -i input.wav -af \"volume=5dB\" output.wav",
+            "ffmpeg -i input.wav -af \"volume='0.5+sin(0.1*PI*t)'\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "volume",
+              "type": "string",
+              "description": "Volume adjustment factor. Examples: '1.5' (linear), '5dB' (decibels), or expression.",
+              "default": "1.0"
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Use for simple gain adjustment. Accepts expressions for dynamic control."
+        },
+        {
+          "label": "Loudness Normalization (EBU R128)",
+          "value": "loudnorm",
+          "description": "Loudness normalization filter based on EBU R128 standard.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"loudnorm=I=-16:TP=-1.5:LRA=11\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "I",
+              "type": "number",
+              "description": "Integrated loudness target (LUFS)",
+              "default": -16
+            },
+            {
+              "name": "TP",
+              "type": "number",
+              "description": "True peak (dBTP)",
+              "default": -1.5
+            },
+            {
+              "name": "LRA",
+              "type": "number",
+              "description": "Loudness range target",
+              "default": 11
+            },
+            {
+              "name": "measured_I",
+              "type": "number",
+              "description": "Measured integrated loudness (used for 2-pass).",
+              "default": null
+            },
+            {
+              "name": "measured_TP",
+              "type": "number",
+              "description": "Measured true peak (used for 2-pass).",
+              "default": null
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "For broadcast/podcast loudness. Use 2-pass mode for precise normalization."
+        },
+        {
+          "label": "Dynamic Audio Normalization",
+          "value": "dynaudnorm",
+          "description": "Applies dynamic normalization for more consistent volume.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"dynaudnorm=f=150:g=15\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "f",
+              "type": "number",
+              "description": "Frame length in ms.",
+              "default": 500,
+              "min": 10
+            },
+            {
+              "name": "g",
+              "type": "number",
+              "description": "Maximum gain (dB).",
+              "default": 15,
+              "min": 0
+            },
+            {
+              "name": "p",
+              "type": "number",
+              "description": "Target peak (0.0–1.0)",
+              "default": 0.95,
+              "min": 0,
+              "max": 1
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Auto-rides gain for variable audio. Good for speech or inconsistent sources."
+        }
+      ]
+    },
+    {
+      "category": "Noise Reduction / Filtering",
+      "filters": [
+        {
+          "label": "FFT Denoise",
+          "value": "afftdn",
+          "description": "Spectral noise reduction using FFT denoising.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"afftdn=nf=-20\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "nf",
+              "type": "number",
+              "description": "Noise floor in dB.",
+              "default": -20,
+              "min": -80,
+              "max": 0
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Fast and good for hiss/static removal."
+        },
+        {
+          "label": "Neural Network Denoise",
+          "value": "arnndn",
+          "description": "Deep learning noise reduction using a pre-trained model.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"arnndn=model=rnnoise-model.bin\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "model",
+              "type": "string",
+              "description": "Path to pre-trained RNNoise or compatible model.",
+              "default": "rnnoise-model.bin"
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Very high quality but slower. Needs model file."
+        },
+        {
+          "label": "Highpass Filter",
+          "value": "highpass",
+          "description": "Removes low-frequency noise below cutoff frequency.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"highpass=f=200\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "f",
+              "type": "number",
+              "description": "Cutoff frequency in Hz.",
+              "default": 200,
+              "min": 20,
+              "max": 22050
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Removes rumble, handling noise, plosives."
+        },
+        {
+          "label": "Lowpass Filter",
+          "value": "lowpass",
+          "description": "Removes high-frequency noise above cutoff frequency.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"lowpass=f=5000\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "f",
+              "type": "number",
+              "description": "Cutoff frequency in Hz.",
+              "default": 5000,
+              "min": 20,
+              "max": 22050
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Removes hiss or digital noise above cutoff."
+        },
+        {
+          "label": "Bandpass Filter",
+          "value": "bandpass",
+          "description": "Allows only frequencies within a specific range to pass.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"bandpass=f=1000:w=200\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "f",
+              "type": "number",
+              "description": "Center frequency in Hz.",
+              "default": 1000,
+              "min": 20,
+              "max": 22050
+            },
+            {
+              "name": "w",
+              "type": "number",
+              "description": "Bandwidth in Hz.",
+              "default": 200,
+              "min": 10,
+              "max": 22050
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Combine with highpass/lowpass for advanced cleanup."
+        }
+      ]
+    },
+    {
+      "category": "Equalizers",
+      "filters": [
+        {
+          "label": "Equalizer (Single Band)",
+          "value": "equalizer",
+          "description": "Single-band parametric equalizer. Adjust center frequency, Q, and gain.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"equalizer=f=1000:t=q:w=1:g=6\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "f",
+              "type": "number",
+              "description": "Center frequency in Hz.",
+              "default": 1000,
+              "min": 20,
+              "max": 22050
+            },
+            {
+              "name": "t",
+              "type": "string",
+              "description": "Filter type: q (Q-factor), o (octave), h (Hz).",
+              "default": "q"
+            },
+            {
+              "name": "w",
+              "type": "number",
+              "description": "Q-factor, octave width, or Hz width (depends on t).",
+              "default": 1
+            },
+            {
+              "name": "g",
+              "type": "number",
+              "description": "Gain in dB.",
+              "default": 0,
+              "min": -30,
+              "max": 30
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Best for surgical EQ on a single frequency. Chain for multi-band."
+        },
+        {
+          "label": "Graphic/Parametric Equalizer (Multi-Band)",
+          "value": "anequalizer",
+          "description": "Multi-band equalizer. Flexible bands for precise shaping.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"anequalizer=band=1000:width_type=q:width=2:g=5\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "bands",
+              "type": "array",
+              "description": "Array of band objects: {f, w, t, g}",
+              "default": []
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Advanced use; define multiple bands. See FFmpeg docs for full syntax."
+        },
+        {
+          "label": "Firequalizer (Programmable EQ)",
+          "value": "firequalizer",
+          "description": "Flexible high-quality parametric EQ. Program filter shape.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"firequalizer=gain='if(f<1000,0,6)'\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "gain",
+              "type": "string",
+              "description": "Gain function for frequencies, e.g. 'if(f<1000,0,6)'.",
+              "default": "0"
+            },
+            {
+              "name": "delay",
+              "type": "number",
+              "description": "Impulse response delay (ms).",
+              "default": 0
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "For advanced EQ curves, filters, or mastering. Can emulate popular EQ shapes."
+        }
+      ]
+    },
+    {
+      "category": "Effects",
+      "filters": [
+        {
+          "label": "Echo",
+          "value": "aecho",
+          "description": "Simple echo/multi-echo effect.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"aecho=0.8:0.9:1000:0.3\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "in_gain",
+              "type": "number",
+              "description": "Input gain (0–1).",
+              "default": 0.8,
+              "min": 0,
+              "max": 1
+            },
+            {
+              "name": "out_gain",
+              "type": "number",
+              "description": "Output gain (0–1).",
+              "default": 0.9,
+              "min": 0,
+              "max": 1
+            },
+            {
+              "name": "delays",
+              "type": "string",
+              "description": "Delay times in ms (comma-separated for multiple echos).",
+              "default": "1000"
+            },
+            {
+              "name": "decays",
+              "type": "string",
+              "description": "Decay factors for each delay (comma-separated).",
+              "default": "0.3"
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Supports multiple echoes. For more advanced effects, see chorus/flanger."
+        },
+        {
+          "label": "Reverb",
+          "value": "areverb",
+          "description": "Adds reverberation to simulate rooms/spaces.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"areverb=room_size=0.6\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "room_size",
+              "type": "number",
+              "description": "Room size (0–1).",
+              "default": 0.6,
+              "min": 0,
+              "max": 1
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Simple reverb. For more control, consider third-party plugins."
+        },
+        {
+          "label": "Chorus",
+          "value": "chorus",
+          "description": "Chorus/flange modulation effect.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"chorus=0.5:0.9:50:0.4:0.25:2\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "in_gain",
+              "type": "number",
+              "description": "Input gain (0–1).",
+              "default": 0.5,
+              "min": 0,
+              "max": 1
+            },
+            {
+              "name": "out_gain",
+              "type": "number",
+              "description": "Output gain (0–1).",
+              "default": 0.9,
+              "min": 0,
+              "max": 1
+            },
+            {
+              "name": "delays",
+              "type": "string",
+              "description": "Delay times in ms (colon/comma separated).",
+              "default": "50"
+            },
+            {
+              "name": "decays",
+              "type": "string",
+              "description": "Decay values (colon/comma separated).",
+              "default": "0.4"
+            },
+            {
+              "name": "speeds",
+              "type": "string",
+              "description": "Modulation speeds (Hz, colon/comma separated).",
+              "default": "0.25"
+            },
+            {
+              "name": "depths",
+              "type": "string",
+              "description": "Depth (0–1, colon/comma separated).",
+              "default": "2"
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Can do multiple voices; use for creative spatial or flange effects."
+        },
+        {
+          "label": "Tempo Change",
+          "value": "atempo",
+          "description": "Change audio speed without changing pitch.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"atempo=1.25\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "tempo",
+              "type": "number",
+              "description": "Speed factor (0.5–2.0).",
+              "default": 1.0,
+              "min": 0.5,
+              "max": 2.0
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "For speech/music. Chain for >2x or <0.5x speeds."
+        },
+        {
+          "label": "Set Sample Rate",
+          "value": "asetrate",
+          "description": "Change the sample rate of the audio (changes both pitch and speed).",
+          "examples": [
+            "ffmpeg -i input.wav -af \"asetrate=44100\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "rate",
+              "type": "number",
+              "description": "Sample rate in Hz.",
+              "default": 44100,
+              "min": 8000,
+              "max": 192000
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Combined with atempo can re-pitch and resample."
+        },
+        {
+          "label": "Tremolo",
+          "value": "tremolo",
+          "description": "Amplitude modulation effect (tremolo).",
+          "examples": [
+            "ffmpeg -i input.wav -af \"tremolo=f=5:d=0.5\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "f",
+              "type": "number",
+              "description": "Modulation frequency (Hz).",
+              "default": 5,
+              "min": 0.1,
+              "max": 20
+            },
+            {
+              "name": "d",
+              "type": "number",
+              "description": "Depth (0–1).",
+              "default": 0.5,
+              "min": 0,
+              "max": 1
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "For classic tremolo effect in guitar, synth, or vocals."
+        },
+        {
+          "label": "Vibrato",
+          "value": "vibrato",
+          "description": "Pitch modulation effect (vibrato).",
+          "examples": [
+            "ffmpeg -i input.wav -af \"vibrato=f=5:d=0.5\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "f",
+              "type": "number",
+              "description": "Modulation frequency (Hz).",
+              "default": 5,
+              "min": 0.1,
+              "max": 20
+            },
+            {
+              "name": "d",
+              "type": "number",
+              "description": "Depth (in semitones).",
+              "default": 0.5,
+              "min": 0,
+              "max": 2
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "For classic vibrato or special effects."
+        },
+        {
+          "label": "Channel Delay",
+          "value": "adelay",
+          "description": "Delay audio channels by specified milliseconds.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"adelay=1000|2000\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "delays",
+              "type": "string",
+              "description": "Delay per channel, in ms, separated by | (e.g., 1000|2000).",
+              "default": "1000"
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Delay L/R or surround channels separately."
+        },
+        {
+          "label": "Pad Audio",
+          "value": "apad",
+          "description": "Pad the end of audio with silence.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"apad=pad_dur=2\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "pad_dur",
+              "type": "number",
+              "description": "Padding duration in seconds.",
+              "default": 2,
+              "min": 0.1
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Pad for looping or aligning tracks."
+        },
+        {
+          "label": "Flanger",
+          "value": "flanger",
+          "description": "Flanger effect—comb filtering modulation.",
+          "examples": [
+            "ffmpeg -i input.wav -af \"flanger=delay=5:depth=2:regen=0.5:width=71:speed=0.5:shape=sine:phase=25\" output.wav"
+          ],
+          "parameters": [
+            {
+              "name": "delay",
+              "type": "number",
+              "description": "Base delay in ms.",
+              "default": 5,
+              "min": 0,
+              "max": 30
+            },
+            {
+              "name": "depth",
+              "type": "number",
+              "description": "Modulation depth in ms.",
+              "default": 2,
+              "min": 0,
+              "max": 10
+            },
+            {
+              "name": "regen",
+              "type": "number",
+              "description": "Regeneration (feedback) (-0.95 to 0.95).",
+              "default": 0,
+              "min": -0.95,
+              "max": 0.95
+            },
+            {
+              "name": "width",
+              "type": "number",
+              "description": "Base width (0–100).",
+              "default": 71,
+              "min": 0,
+              "max": 100
+            },
+            {
+              "name": "speed",
+              "type": "number",
+              "description": "Modulation speed (Hz).",
+              "default": 0.5,
+              "min": 0.01,
+              "max": 10
+            },
+            {
+              "name": "shape",
+              "type": "string",
+              "description": "Shape of modulation (sine/triangle).",
+              "default": "sine"
+            },
+            {
+              "name": "phase",
+              "type": "number",
+              "description": "Phase difference (0–100).",
+              "default": 25,
+              "min": 0,
+              "max": 100
+            }
+          ],
+          "ffmpeg_type": "audio",
+          "supports_streams": false,
+          "required_files": 1,
+          "complex_filter": false,
+          "default_extension": "wav",
+          "agent_notes": "Flanger for classic swoosh/phaser FX."
+        }
+      ]
+    },
+        {
+          "category": "Stereo / Spatial",
+          "filters": [
+            {
+              "label": "Pan",
+              "value": "pan",
+              "description": "Remix channels for routing, downmix, upmix (mono, stereo, surround).",
+              "examples": [
+                "ffmpeg -i input.wav -af \"pan=stereo|c0=0.5*c0+0.5*c1|c1=c1\" output.wav",
+                "ffmpeg -i input.wav -af \"pan=mono|c0=0.5*c0+0.5*c1\" output.wav"
+              ],
+              "parameters": [
+                {
+                  "name": "layout",
+                  "type": "string",
+                  "description": "Output channel layout (e.g., stereo, mono, 5.1).",
+                  "default": "stereo"
+                },
+                {
+                  "name": "mapping",
+                  "type": "string",
+                  "description": "Channel mixing expression (e.g., c0=0.5*c0+0.5*c1|c1=c1).",
+                  "default": ""
+                }
+              ],
+              "ffmpeg_type": "audio",
+              "supports_streams": false,
+              "required_files": 1,
+              "complex_filter": false,
+              "default_extension": "wav",
+              "agent_notes": "Highly flexible; use for all channel mapping needs."
+            },
+            {
+              "label": "Stereo Tools",
+              "value": "stereotools",
+              "description": "Stereo width, balance, phase, inversion, and mono-mix.",
+              "examples": [
+                "ffmpeg -i input.wav -af \"stereotools=mlev=1.5\" output.wav"
+              ],
+              "parameters": [
+                {
+                  "name": "mlev",
+                  "type": "number",
+                  "description": "Stereo widening level (0.5–3.0).",
+                  "default": 1.0,
+                  "min": 0.5,
+                  "max": 3.0
+                },
+                {
+                  "name": "balance",
+                  "type": "number",
+                  "description": "Balance (L–R pan, -1 to 1).",
+                  "default": 0,
+                  "min": -1,
+                  "max": 1
+                }
+              ],
+              "ffmpeg_type": "audio",
+              "supports_streams": false,
+              "required_files": 1,
+              "complex_filter": false,
+              "default_extension": "wav",
+              "agent_notes": "For stereo imaging, mono conversion, phase flip, etc."
+            },
+            {
+              "label": "Channel Split",
+              "value": "channelsplit",
+              "description": "Splits channels of multi-channel audio into separate mono streams.",
+              "examples": [
+                "ffmpeg -i input.wav -af \"channelsplit=channel_layout=stereo\" output_%d.wav"
+              ],
+              "parameters": [
+                {
+                  "name": "channel_layout",
+                  "type": "string",
+                  "description": "Layout to split (e.g., stereo, 5.1).",
+                  "default": "stereo"
+                }
+              ],
+              "ffmpeg_type": "audio",
+              "supports_streams": false,
+              "required_files": 1,
+              "complex_filter": false,
+              "default_extension": "wav",
+              "agent_notes": "Outputs one file per channel."
+            },
+            {
+              "label": "Audio Merge",
+              "value": "amerge",
+              "description": "Merges multiple mono streams into a multi-channel stream.",
+              "examples": [
+                "ffmpeg -i left.wav -i right.wav -filter_complex \"[0][1]amerge=inputs=2\" stereo.wav"
+              ],
+              "parameters": [
+                {
+                  "name": "inputs",
+                  "type": "number",
+                  "description": "Number of input streams to merge.",
+                  "default": 2,
+                  "min": 2,
+                  "max": 8
+                }
+              ],
+              "ffmpeg_type": "audio",
+              "supports_streams": true,
+              "required_files": 2,
+              "complex_filter": true,
+              "default_extension": "wav",
+              "agent_notes": "Inputs must be single-channel (mono)."
+            },
+            {
+              "label": "Audio Format",
+              "value": "aformat",
+              "description": "Set sample rate, sample format, or channel layout.",
+              "examples": [
+                "ffmpeg -i input.wav -af \"aformat=sample_fmts=s16:channel_layouts=stereo\" output.wav"
+              ],
+              "parameters": [
+                {
+                  "name": "sample_fmts",
+                  "type": "string",
+                  "description": "Sample formats (e.g., s16, fltp, s32).",
+                  "default": "s16"
+                },
+                {
+                  "name": "channel_layouts",
+                  "type": "string",
+                  "description": "Output layout (mono, stereo, 5.1, etc).",
+                  "default": "stereo"
+                }
+              ],
+              "ffmpeg_type": "audio",
+              "supports_streams": false,
+              "required_files": 1,
+              "complex_filter": false,
+              "default_extension": "wav",
+              "agent_notes": "For format conversion, channel matching."
+            },
+            {
+              "label": "Stereo Widen",
+              "value": "stereowiden",
+              "description": "Widen the stereo image for spatial effect.",
+              "examples": [
+                "ffmpeg -i input.wav -af \"stereowiden=level=1.8\" output.wav"
+              ],
+              "parameters": [
+                {
+                  "name": "level",
+                  "type": "number",
+                  "description": "Stereo widening factor (1.0–3.0).",
+                  "default": 1.5,
+                  "min": 1.0,
+                  "max": 3.0
+                }
+              ],
+              "ffmpeg_type": "audio",
+              "supports_streams": false,
+              "required_files": 1,
+              "complex_filter": false,
+              "default_extension": "wav",
+              "agent_notes": "Use for width/spatial enhancement; can degrade mono compatibility."
+            }
+          ]
+        },
+        {
+          "category": "Compression, Gating, Limiting",
+          "filters": [
+            {
+              "label": "Compressor",
+              "value": "acompressor",
+              "description": "Standard audio compressor to reduce dynamic range.",
+              "examples": [
+                "ffmpeg -i input.wav -af \"acompressor=threshold=-12dB:ratio=4:attack=10:release=50\" output.wav"
+              ],
+              "parameters": [
+                {
+                  "name": "threshold",
+                  "type": "string",
+                  "description": "Threshold level in dB (e.g., -12dB).",
+                  "default": "-12dB"
+                },
+                {
+                  "name": "ratio",
+                  "type": "number",
+                  "description": "Compression ratio.",
+                  "default": 4,
+                  "min": 1,
+                  "max": 20
+                },
+                {
+                  "name": "attack",
+                  "type": "number",
+                  "description": "Attack time (ms).",
+                  "default": 10,
+                  "min": 0.1,
+                  "max": 1000
+                },
+                {
+                  "name": "release",
+                  "type": "number",
+                  "description": "Release time (ms).",
+                  "default": 50,
+                  "min": 1,
+                  "max": 5000
+                }
+              ],
+              "ffmpeg_type": "audio",
+              "supports_streams": false,
+              "required_files": 1,
+              "complex_filter": false,
+              "default_extension": "wav",
+              "agent_notes": "Reduces loud/quiet variation, helps with spoken word and music."
+            },
+            {
+              "label": "Limiter",
+              "value": "alimiter",
+              "description": "Audio limiter to prevent peaks/clipping.",
+              "examples": [
+                "ffmpeg -i input.wav -af \"alimiter=limit=-1dB\" output.wav"
+              ],
+              "parameters": [
+                {
+                  "name": "limit",
+                  "type": "string",
+                  "description": "Peak limit in dB (e.g., -1dB).",
+                  "default": "-1dB"
+                }
+              ],
+              "ffmpeg_type": "audio",
+              "supports_streams": false,
+              "required_files": 1,
+              "complex_filter": false,
+              "default_extension": "wav",
+              "agent_notes": "Set slightly below 0dB to avoid digital clipping."
+            },
+            {
+              "label": "Gate/Expander",
+              "value": "agate",
+              "description": "Audio gate/expander to cut low-level noise.",
+              "examples": [
+                "ffmpeg -i input.wav -af \"agate=threshold=-30dB:ratio=2\" output.wav"
+              ],
+              "parameters": [
+                {
+                  "name": "threshold",
+                  "type": "string",
+                  "description": "Gate threshold in dB (e.g., -30dB).",
+                  "default": "-30dB"
+                },
+                {
+                  "name": "ratio",
+                  "type": "number",
+                  "description": "Expansion ratio.",
+                  "default": 2,
+                  "min": 1,
+                  "max": 10
+                }
+              ],
+              "ffmpeg_type": "audio",
+              "supports_streams": false,
+              "required_files": 1,
+              "complex_filter": false,
+              "default_extension": "wav",
+              "agent_notes": "Cleans up room tone, background noise."
+            },
+            {
+              "label": "Dynamic Audio Normalization",
+              "value": "dynaudnorm",
+              "description": "Level-riding dynamic audio normalization.",
+              "examples": [
+                "ffmpeg -i input.wav -af \"dynaudnorm=p=1:m=100\" output.wav"
+              ],
+              "parameters": [
+                {
+                  "name": "p",
+                  "type": "number",
+                  "description": "Target peak value (0.1–1.0).",
+                  "default": 1.0,
+                  "min": 0.1,
+                  "max": 1.0
+                },
+                {
+                  "name": "m",
+                  "type": "number",
+                  "description": "Window size in ms.",
+                  "default": 100,
+                  "min": 10,
+                  "max": 1000
+                }
+              ],
+              "ffmpeg_type": "audio",
+              "supports_streams": false,
+              "required_files": 1,
+              "complex_filter": false,
+              "default_extension": "wav",
+              "agent_notes": "Smooths out level fluctuations (podcasts, vlogs, etc)."
+            }
+          ]
+        },
+            {
+              "category": "Analysis / Metering",
+              "filters": [
+                {
+                  "label": "Audio Statistics",
+                  "value": "astats",
+                  "description": "Computes per-channel audio stats (level, RMS, peak, DC offset, etc.).",
+                  "examples": [
+                    "ffmpeg -i input.wav -af \"astats=metadata=1:reset=1\" -f null -"
+                  ],
+                  "parameters": [
+                    {
+                      "name": "metadata",
+                      "type": "number",
+                      "description": "Write stats to metadata (0: no, 1: yes).",
+                      "default": 1,
+                      "options": [0, 1]
+                    },
+                    {
+                      "name": "reset",
+                      "type": "number",
+                      "description": "Reset stats every N frames (0: never).",
+                      "default": 1
+                    }
+                  ],
+                  "ffmpeg_type": "audio",
+                  "supports_streams": false,
+                  "required_files": 1,
+                  "complex_filter": false,
+                  "default_extension": "txt",
+                  "agent_notes": "Outputs to stderr or metadata, not audio/video files."
+                },
+                {
+                  "label": "Audio Metadata",
+                  "value": "ametadata",
+                  "description": "Extract or modify audio frame/block metadata.",
+                  "examples": [
+                    "ffmpeg -i input.wav -af \"ametadata=print:key=lavfi.astats.Overall.RMS_level\" -f null -"
+                  ],
+                  "parameters": [
+                    {
+                      "name": "mode",
+                      "type": "string",
+                      "description": "Operation mode (print, remove, set).",
+                      "default": "print"
+                    },
+                    {
+                      "name": "key",
+                      "type": "string",
+                      "description": "Metadata key to extract or set (e.g., lavfi.astats.Overall.RMS_level).",
+                      "default": ""
+                    }
+                  ],
+                  "ffmpeg_type": "audio",
+                  "supports_streams": false,
+                  "required_files": 1,
+                  "complex_filter": false,
+                  "default_extension": "txt",
+                  "agent_notes": "Used in analysis chains with astats, silencedetect, etc."
+                },
+                {
+                  "label": "Show Frequencies",
+                  "value": "showfreqs",
+                  "description": "Visualize audio frequencies as video (bar, line, dot, etc).",
+                  "examples": [
+                    "ffmpeg -i input.wav -filter_complex \"showfreqs=s=1280x720:mode=line\" output.mp4"
+                  ],
+                  "parameters": [
+                    {
+                      "name": "s",
+                      "type": "string",
+                      "description": "Output size (e.g., 1280x720).",
+                      "default": "1280x720"
+                    },
+                    {
+                      "name": "mode",
+                      "type": "string",
+                      "description": "Display mode (bar, line, dot, peak).",
+                      "default": "line",
+                      "options": ["bar", "line", "dot", "peak"]
+                    }
+                  ],
+                  "ffmpeg_type": "audio",
+                  "supports_streams": false,
+                  "required_files": 1,
+                  "complex_filter": true,
+                  "default_extension": "mp4",
+                  "agent_notes": "Requires video output. Great for waveform/spectrum visualizers."
+                },
+                {
+                  "label": "Audio Spectrum",
+                  "value": "aspectrum",
+                  "description": "Displays audio spectrum as a video output (spectrogram).",
+                  "examples": [
+                    "ffmpeg -i input.wav -filter_complex \"aspectrum=s=1024x512\" output.mp4"
+                  ],
+                  "parameters": [
+                    {
+                      "name": "s",
+                      "type": "string",
+                      "description": "Output size (e.g., 1024x512).",
+                      "default": "1024x512"
+                    }
+                  ],
+                  "ffmpeg_type": "audio",
+                  "supports_streams": false,
+                  "required_files": 1,
+                  "complex_filter": true,
+                  "default_extension": "mp4",
+                  "agent_notes": "Renders a spectrogram video. Can be used for music visualization."
+                },
+                {
+                  "label": "Audio Stream Select",
+                  "value": "astreamselect",
+                  "description": "Selects a specific audio stream from multi-stream input.",
+                  "examples": [
+                    "ffmpeg -i multi_audio.mkv -filter_complex \"astreamselect=inputs=2:map=0\" output.wav"
+                  ],
+                  "parameters": [
+                    {
+                      "name": "inputs",
+                      "type": "number",
+                      "description": "Number of audio input streams.",
+                      "default": 2
+                    },
+                    {
+                      "name": "map",
+                      "type": "number",
+                      "description": "Select stream index (0-based).",
+                      "default": 0
+                    }
+                  ],
+                  "ffmpeg_type": "audio",
+                  "supports_streams": true,
+                  "required_files": 1,
+                  "complex_filter": true,
+                  "default_extension": "wav",
+                  "agent_notes": "Used for picking language or commentary tracks."
+                },
+                {
+                  "label": "Silence Detect",
+                  "value": "silencedetect",
+                  "description": "Detects periods of silence in audio (for trimming, segmenting, etc).",
+                  "examples": [
+                    "ffmpeg -i input.wav -af \"silencedetect=n=-50dB:d=1\" -f null -"
+                  ],
+                  "parameters": [
+                    {
+                      "name": "n",
+                      "type": "string",
+                      "description": "Silence threshold (e.g., -50dB).",
+                      "default": "-50dB"
+                    },
+                    {
+                      "name": "d",
+                      "type": "number",
+                      "description": "Minimum silence duration in seconds.",
+                      "default": 1
+                    }
+                  ],
+                  "ffmpeg_type": "audio",
+                  "supports_streams": false,
+                  "required_files": 1,
+                  "complex_filter": false,
+                  "default_extension": "txt",
+                  "agent_notes": "Useful for podcast/video editing automation. Outputs events, not audio."
+                }
+              ]
+            },
+                {
+                  "category": "Advanced Routing, Timing, and Misc",
+                  "filters": [
+                    {
+                      "label": "Audio Resample",
+                      "value": "aresample",
+                      "description": "Change audio sample rate (resampling).",
+                      "examples": [
+                        "ffmpeg -i input.wav -af \"aresample=44100\" output.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "resampler",
+                          "type": "string",
+                          "description": "Resampling algorithm (e.g., soxr, swr).",
+                          "default": ""
+                        },
+                        {
+                          "name": "osr",
+                          "type": "number",
+                          "description": "Output sample rate.",
+                          "default": 44100
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": false,
+                      "required_files": 1,
+                      "complex_filter": false,
+                      "default_extension": "wav",
+                      "agent_notes": "For format conversion, up/down sampling."
+                    },
+                    {
+                      "label": "Audio Split",
+                      "value": "asplit",
+                      "description": "Split audio into multiple identical outputs.",
+                      "examples": [
+                        "ffmpeg -i input.wav -filter_complex \"asplit=2[out1][out2]\" -map \"[out1]\" o1.wav -map \"[out2]\" o2.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "outputs",
+                          "type": "number",
+                          "description": "Number of output streams.",
+                          "default": 2
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": true,
+                      "required_files": 1,
+                      "complex_filter": true,
+                      "default_extension": "wav"
+                    },
+                    {
+                      "label": "Concatenate Audio",
+                      "value": "concat",
+                      "description": "Concatenate multiple audio inputs sequentially.",
+                      "examples": [
+                        "ffmpeg -i \"concat:file1.wav|file2.wav\" -acodec copy output.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "n",
+                          "type": "number",
+                          "description": "Number of segments to concatenate.",
+                          "default": 2
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": true,
+                      "required_files": 2,
+                      "complex_filter": true,
+                      "default_extension": "wav",
+                      "agent_notes": "Can also use -filter_complex with concat filter for advanced use."
+                    },
+                    {
+                      "label": "Audio Delay",
+                      "value": "adelay",
+                      "description": "Delay audio channels by N milliseconds.",
+                      "examples": [
+                        "ffmpeg -i input.wav -af \"adelay=1000|2000\" output.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "delays",
+                          "type": "string",
+                          "description": "Pipe-separated delay per channel in ms (e.g., 1000|2000).",
+                          "default": "1000"
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": false,
+                      "required_files": 1,
+                      "complex_filter": false,
+                      "default_extension": "wav"
+                    },
+                    {
+                      "label": "Audio Pad (Silence)",
+                      "value": "apad",
+                      "description": "Add silence to audio (start/end).",
+                      "examples": [
+                        "ffmpeg -i input.wav -af \"apad=pad_dur=2\" output.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "pad_dur",
+                          "type": "number",
+                          "description": "Pad duration in seconds.",
+                          "default": 2
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": false,
+                      "required_files": 1,
+                      "complex_filter": false,
+                      "default_extension": "wav"
+                    },
+                    {
+                      "label": "Audio Trim",
+                      "value": "atrim",
+                      "description": "Trim audio by start/end time or duration.",
+                      "examples": [
+                        "ffmpeg -i input.wav -af \"atrim=start=5:end=10\" output.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "start",
+                          "type": "number",
+                          "description": "Start time in seconds.",
+                          "default": 0
+                        },
+                        {
+                          "name": "end",
+                          "type": "number",
+                          "description": "End time in seconds.",
+                          "default": 10
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": false,
+                      "required_files": 1,
+                      "complex_filter": false,
+                      "default_extension": "wav"
+                    },
+                    {
+                      "label": "Silence Remove",
+                      "value": "silenceremove",
+                      "description": "Remove periods of silence automatically from audio.",
+                      "examples": [
+                        "ffmpeg -i input.wav -af \"silenceremove=start_periods=1:start_silence=0.5:start_threshold=-50dB\" output.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "start_periods",
+                          "type": "number",
+                          "description": "Number of silent periods at start to remove.",
+                          "default": 1
+                        },
+                        {
+                          "name": "start_silence",
+                          "type": "number",
+                          "description": "Minimum silence duration (seconds).",
+                          "default": 0.5
+                        },
+                        {
+                          "name": "start_threshold",
+                          "type": "string",
+                          "description": "Silence threshold (e.g., -50dB).",
+                          "default": "-50dB"
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": false,
+                      "required_files": 1,
+                      "complex_filter": false,
+                      "default_extension": "wav"
+                    },
+                    {
+                      "label": "Audio Format",
+                      "value": "aformat",
+                      "description": "Set sample format, rate, or channel layout.",
+                      "examples": [
+                        "ffmpeg -i input.wav -af \"aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo\" output.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "sample_fmts",
+                          "type": "string",
+                          "description": "Sample format (e.g., s16, flt, dbl).",
+                          "default": "s16"
+                        },
+                        {
+                          "name": "sample_rates",
+                          "type": "number",
+                          "description": "Sample rate (Hz).",
+                          "default": 44100
+                        },
+                        {
+                          "name": "channel_layouts",
+                          "type": "string",
+                          "description": "Channel layout (e.g., mono, stereo, 5.1).",
+                          "default": "stereo"
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": false,
+                      "required_files": 1,
+                      "complex_filter": false,
+                      "default_extension": "wav"
+                    },
+                    {
+                      "label": "Set Audio PTS",
+                      "value": "asetpts",
+                      "description": "Set audio presentation timestamp.",
+                      "examples": [
+                        "ffmpeg -i input.wav -af \"asetpts=PTS/2\" output.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "expr",
+                          "type": "string",
+                          "description": "PTS expression (e.g., PTS/2 for 2x speed).",
+                          "default": "PTS"
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": false,
+                      "required_files": 1,
+                      "complex_filter": false,
+                      "default_extension": "wav"
+                    },
+                    {
+                      "label": "Set Number of Samples",
+                      "value": "asetnsamples",
+                      "description": "Set the number of samples per audio frame.",
+                      "examples": [
+                        "ffmpeg -i input.wav -af \"asetnsamples=n=1024:p=1\" output.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "n",
+                          "type": "number",
+                          "description": "Number of samples per frame.",
+                          "default": 1024
+                        },
+                        {
+                          "name": "p",
+                          "type": "number",
+                          "description": "Set 1 to pad/truncate to exactly n samples.",
+                          "default": 1
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": false,
+                      "required_files": 1,
+                      "complex_filter": false,
+                      "default_extension": "wav"
+                    },
+                    {
+                      "label": "Channel Map",
+                      "value": "channelmap",
+                      "description": "Remap or reorder audio channels.",
+                      "examples": [
+                        "ffmpeg -i input.wav -af \"channelmap=channel_layout=stereo\" output.wav"
+                      ],
+                      "parameters": [
+                        {
+                          "name": "channel_layout",
+                          "type": "string",
+                          "description": "Desired channel layout (e.g., stereo, 5.1).",
+                          "default": "stereo"
+                        }
+                      ],
+                      "ffmpeg_type": "audio",
+                      "supports_streams": false,
+                      "required_files": 1,
+                      "complex_filter": false,
+                      "default_extension": "wav"
+                    }
+                  ]
+                },
+
+                    {
+                      "category": "Additional/Advanced",
+                      "filters": [
+                        {
+                          "label": "Compressor/Expander (Compand)",
+                          "value": "compand",
+                          "description": "Apply dynamic range compression or expansion to audio using companding curves.",
+                          "examples": [
+                            "ffmpeg -i input.wav -af \"compand=attacks=0:decays=0:points=-80/-900|-30/-30|20/0\" output.wav"
+                          ],
+                          "parameters": [
+                            {
+                              "name": "attacks",
+                              "type": "number",
+                              "description": "Attack times (in seconds) for each segment.",
+                              "default": 0.3
+                            },
+                            {
+                              "name": "decays",
+                              "type": "number",
+                              "description": "Decay times (in seconds) for each segment.",
+                              "default": 0.8
+                            },
+                            {
+                              "name": "points",
+                              "type": "string",
+                              "description": "Transfer function (input/output points, e.g., -80/-900|-30/-30|20/0).",
+                              "default": "-80/-900|-30/-30|20/0"
+                            }
+                          ],
+                          "ffmpeg_type": "audio",
+                          "supports_streams": false,
+                          "required_files": 1,
+                          "complex_filter": false,
+                          "default_extension": "wav",
+                          "agent_notes": "For advanced dynamic range shaping. Requires tuning of points."
+                        },
+                        {
+                          "label": "Advanced Equalizer",
+                          "value": "anequalizer",
+                          "description": "Flexible multi-band graphic or parametric EQ.",
+                          "examples": [
+                            "ffmpeg -i input.wav -af \"anequalizer=c0 f=100 w=100 g=5 t=1|c0 f=1000 w=200 g=-2 t=1\" output.wav"
+                          ],
+                          "parameters": [
+                            {
+                              "name": "c0",
+                              "type": "string",
+                              "description": "Band settings for channel 0 (e.g., f=100 w=100 g=5 t=1 | f=1000 w=200 g=-2 t=1).",
+                              "default": ""
+                            }
+                          ],
+                          "ffmpeg_type": "audio",
+                          "supports_streams": false,
+                          "required_files": 1,
+                          "complex_filter": false,
+                          "default_extension": "wav"
+                        },
+                        {
+                          "label": "High Definition Compatible Digital (HDCD) Decoder",
+                          "value": "hdcd",
+                          "description": "Decode HDCD-encoded audio.",
+                          "examples": [
+                            "ffmpeg -i input.wav -af \"hdcd\" output.wav"
+                          ],
+                          "parameters": [],
+                          "ffmpeg_type": "audio",
+                          "supports_streams": false,
+                          "required_files": 1,
+                          "complex_filter": false,
+                          "default_extension": "wav",
+                          "agent_notes": "No parameters. Use for remastering or archival audio."
+                        },
+                        {
+                          "label": "Rubber Band (Time/Pitch Shift)",
+                          "value": "rubberband",
+                          "description": "Time-stretch or pitch-shift audio (requires lib rubberband).",
+                          "examples": [
+                            "ffmpeg -i input.wav -af \"rubberband=tempo=1.25\" output.wav"
+                          ],
+                          "parameters": [
+                            {
+                              "name": "tempo",
+                              "type": "number",
+                              "description": "Playback speed multiplier (1.0 = original).",
+                              "default": 1.0
+                            },
+                            {
+                              "name": "pitch",
+                              "type": "number",
+                              "description": "Pitch scaling (1.0 = original).",
+                              "default": 1.0
+                            }
+                          ],
+                          "ffmpeg_type": "audio",
+                          "supports_streams": false,
+                          "required_files": 1,
+                          "complex_filter": false,
+                          "default_extension": "wav",
+                          "agent_notes": "Requires ffmpeg compiled with rubberband support."
+                        },
+                        {
+                          "label": "Sofalizer (Binaural Render)",
+                          "value": "sofalizer",
+                          "description": "Virtual surround/binaural effect using SOFA data for headphones.",
+                          "examples": [
+                            "ffmpeg -i input.wav -af \"sofalizer=sofa=MySofa.sofa:gain=1\" output.wav"
+                          ],
+                          "parameters": [
+                            {
+                              "name": "sofa",
+                              "type": "string",
+                              "description": "Path to SOFA file (spatial acoustic data).",
+                              "default": ""
+                            },
+                            {
+                              "name": "gain",
+                              "type": "number",
+                              "description": "Gain factor.",
+                              "default": 1
+                            }
+                          ],
+                          "ffmpeg_type": "audio",
+                          "supports_streams": false,
+                          "required_files": 2,
+                          "complex_filter": false,
+                          "default_extension": "wav",
+                          "agent_notes": "For advanced binaural headphone processing."
+                        },
+                        {
+                          "label": "Audio Channel Extract",
+                          "value": "aextract",
+                          "description": "Extract a single channel from multichannel audio.",
+                          "examples": [
+                            "ffmpeg -i input.wav -af \"aextract=channel_layout=stereo:channels=FL\" output.wav"
+                          ],
+                          "parameters": [
+                            {
+                              "name": "channel_layout",
+                              "type": "string",
+                              "description": "Input layout (e.g., stereo, 5.1).",
+                              "default": "stereo"
+                            },
+                            {
+                              "name": "channels",
+                              "type": "string",
+                              "description": "Channel(s) to extract (e.g., FL, FR, C).",
+                              "default": "FL"
+                            }
+                          ],
+                          "ffmpeg_type": "audio",
+                          "supports_streams": false,
+                          "required_files": 1,
+                          "complex_filter": false,
+                          "default_extension": "wav"
+                        },
+                        {
+                          "label": "Audio FIR Convolution",
+                          "value": "afir",
+                          "description": "Apply convolution using an impulse response file (reverb, tone shaping).",
+                          "examples": [
+                            "ffmpeg -i input.wav -af \"afir=gtype=gn:ir=impulse.wav\" output.wav"
+                          ],
+                          "parameters": [
+                            {
+                              "name": "ir",
+                              "type": "string",
+                              "description": "Impulse response WAV file path.",
+                              "default": ""
+                            },
+                            {
+                              "name": "gtype",
+                              "type": "string",
+                              "description": "Gain type (gn, gc, none).",
+                              "default": "gn"
+                            }
+                          ],
+                          "ffmpeg_type": "audio",
+                          "supports_streams": false,
+                          "required_files": 2,
+                          "complex_filter": false,
+                          "default_extension": "wav",
+                          "agent_notes": "Use impulse responses for reverb, amp simulation, etc."
+                        },
+                        {
+                          "label": "BS2B",
+                          "value": "bs2b",
+                          "description": "Bauer stereophonic-to-binaural audio transform for headphones.",
+                          "examples": [
+                            "ffmpeg -i input.wav -af \"bs2b=level=4.5\" output.wav"
+                          ],
+                          "parameters": [
+                            {
+                              "name": "level",
+                              "type": "number",
+                              "description": "Crossfeed level.",
+                              "default": 4.5
+                            }
+                          ],
+                          "ffmpeg_type": "audio",
+                          "supports_streams": false,
+                          "required_files": 1,
+                          "complex_filter": false,
+                          "default_extension": "wav",
+                          "agent_notes": "Best used for stereo->headphone mastering."
+                        },
+                        {
+                          "label": "LADSPA Plugin",
+                          "value": "ladspa",
+                          "description": "Run an external LADSPA plugin.",
+                          "examples": [
+                            "ffmpeg -i input.wav -af \"ladspa=file.so;plugin;controls\" output.wav"
+                          ],
+                          "parameters": [
+                            {
+                              "name": "plugin",
+                              "type": "string",
+                              "description": "Plugin name or path.",
+                              "default": ""
+                            },
+                            {
+                              "name": "controls",
+                              "type": "string",
+                              "description": "Plugin control values (comma-separated).",
+                              "default": ""
+                            }
+                          ],
+                          "ffmpeg_type": "audio",
+                          "supports_streams": false,
+                          "required_files": 1,
+                          "complex_filter": false,
+                          "default_extension": "wav",
+                          "agent_notes": "System must have LADSPA plugins installed."
+                        }
+                      ]
+                    }
+                  ]
+                  
+              
+        
+          
+      
+        
+  
