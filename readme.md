@@ -6,16 +6,15 @@ This monorepo contains an MCP server for agentic video editing. It also powers a
 
 ---
 
-### Installation
+## Installation
 
 You’ll need **Node.js**, **npm** (or pnpm/yarn), and **Python 3.12+** (with `pip`).  
 These instructions assume a Unix-like OS (Mac/Linux), but should be adaptable for Windows.
-
 Docker instructions below. 
 
 ---
 
-### Clone the Repo
+## Clone the Repo
 
 From your root coding project directory
 git clone https://github.com/hyepartners-gmail/vibevideo-mcp.git
@@ -28,7 +27,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-# If you don't have ffmpeg installed
+### If you don't have ffmpeg installed
 pip install ffmpeg
 
 ### Install the ffmpeg-frontend components
@@ -38,7 +37,7 @@ npm install
 
 
 ---
-### Structure
+## Structure
 
 The project includes **three main servers**:
 
