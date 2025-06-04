@@ -1,0 +1,4918 @@
+[
+  {
+    "category": "Blur, Denoise, and Sharpen",
+    "filters": [
+      {
+        "label": "Average Blur",
+        "value": "avgblur",
+        "description": "Applies an average blur to the video.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"avgblur=sizeX=5:sizeY=5\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "sizeX",
+            "type": "integer",
+            "description": "Horizontal radius size (≥ 1).",
+            "default": 1,
+            "min": 1
+          },
+          {
+            "name": "sizeY",
+            "type": "integer",
+            "description": "Vertical radius size (≥ 1); 0 defaults to sizeX.",
+            "default": 1,
+            "min": 0
+          },
+          {
+            "name": "planes",
+            "type": "string",
+            "description": "Which color planes to filter; default is all."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Use for quick smoothing of noisy or blocky video. For all planes: omit planes param."
+      },
+      {
+        "label": "Box Blur",
+        "value": "boxblur",
+        "description": "Applies a box blur to the video.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"boxblur=10:2\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "luma_radius",
+            "type": "integer",
+            "description": "Radius for luma (Y) component.",
+            "default": 2,
+            "min": 0
+          },
+          {
+            "name": "luma_power",
+            "type": "integer",
+            "description": "Number of times to apply the blur for luma.",
+            "default": 1,
+            "min": 1
+          },
+          {
+            "name": "chroma_radius",
+            "type": "integer",
+            "description": "Radius for chroma (U/V) component.",
+            "default": 0,
+            "min": 0
+          },
+          {
+            "name": "chroma_power",
+            "type": "integer",
+            "description": "Number of times to apply the blur for chroma.",
+            "default": 1,
+            "min": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "More flexible than avgblur; useful for strong smoothing or cartoon effects."
+      },
+      {
+        "label": "Gaussian Blur",
+        "value": "gblur",
+        "description": "Applies a Gaussian blur to the video.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"gblur=sigma=5:steps=3\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "sigma",
+            "type": "number",
+            "description": "Standard deviation of the Gaussian blur (≥ 0.0).",
+            "default": 1,
+            "min": 0
+          },
+          {
+            "name": "steps",
+            "type": "integer",
+            "description": "Number of steps (≥ 1).",
+            "default": 1,
+            "min": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Gaussian blur yields a natural, photographic blur. 'steps' trades speed for smoothness."
+      },
+      {
+        "label": "Directional Blur",
+        "value": "dblur",
+        "description": "Applies a directional blur to the video.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"dblur=angle=45:radius=10\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "angle",
+            "type": "number",
+            "description": "Direction of the blur in degrees.",
+            "default": 0
+          },
+          {
+            "name": "radius",
+            "type": "integer",
+            "description": "Radius of the blur (≥ 1).",
+            "default": 1,
+            "min": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Use for simulating motion blur in a specific direction."
+      },
+      {
+        "label": "Smart Blur",
+        "value": "smartblur",
+        "description": "Applies a smart blur or sharpen, depending on strength values.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"smartblur=lr=1.5:ls=0.5:lt=0.8\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "lr",
+            "type": "number",
+            "description": "Luma radius.",
+            "default": 1
+          },
+          {
+            "name": "ls",
+            "type": "number",
+            "description": "Luma strength (positive = blur, negative = sharpen).",
+            "default": 0.5
+          },
+          {
+            "name": "lt",
+            "type": "number",
+            "description": "Luma threshold.",
+            "default": 0.8
+          },
+          {
+            "name": "cr",
+            "type": "number",
+            "description": "Chroma radius.",
+            "default": 1
+          },
+          {
+            "name": "cs",
+            "type": "number",
+            "description": "Chroma strength.",
+            "default": 0.5
+          },
+          {
+            "name": "ct",
+            "type": "number",
+            "description": "Chroma threshold.",
+            "default": 0.8
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "For edge-preserving smoothing or mild sharpening. Negative strength values sharpen instead."
+      },
+      {
+        "label": "Fast Simple Postprocessing",
+        "value": "fspp",
+        "description": "Applies fast, simple postprocessing (deblocking/denoising).",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"fspp=quality=10:strength=5\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "quality",
+            "type": "integer",
+            "description": "Quality level (0–63).",
+            "default": 10,
+            "min": 0,
+            "max": 63
+          },
+          {
+            "name": "strength",
+            "type": "integer",
+            "description": "Strength (0–100).",
+            "default": 5,
+            "min": 0,
+            "max": 100
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Great for fixing MPEG-2 blocks or noisy analog captures."
+      },
+      {
+        "label": "Shape Adaptive Blur",
+        "value": "sab",
+        "description": "Applies shape-adaptive blur.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"sab=radius=5:strength=0.8\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "radius",
+            "type": "integer",
+            "description": "Blur radius (≥ 1).",
+            "default": 1,
+            "min": 1
+          },
+          {
+            "name": "strength",
+            "type": "number",
+            "description": "Strength of the blur (≥ 0.0).",
+            "default": 0.8,
+            "min": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Edge-aware blur. Useful for stylized smoothing."
+      }
+    ]
+  },
+  {
+    "category": "Denoise",
+    "filters": [
+      {
+        "label": "Adaptive Temporal Averaging Denoiser",
+        "value": "atadenoise",
+        "description": "Applies adaptive temporal denoising.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"atadenoise=threshold=0.1\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "threshold",
+            "type": "number",
+            "description": "Denoising threshold (≥ 0.0).",
+            "default": 0.1,
+            "min": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Reduces noise by averaging across neighboring frames."
+      },
+      {
+        "label": "Bilateral Denoise",
+        "value": "bilateral",
+        "description": "Bilateral filtering (denoising, edge preserving).",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"bilateral=sigmaS=0.1:sigmaR=0.1\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "sigmaS",
+            "type": "number",
+            "description": "Spatial sigma (≥ 0.0).",
+            "default": 0.1,
+            "min": 0
+          },
+          {
+            "name": "sigmaR",
+            "type": "number",
+            "description": "Range sigma (≥ 0.0).",
+            "default": 0.1,
+            "min": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Preserves edges while removing noise. Useful for cartoon/anime."
+      },
+      {
+        "label": "High-Quality 3D Denoise",
+        "value": "hqdn3d",
+        "description": "High-quality spatial/temporal denoising.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"hqdn3d=4:3:6:4\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "luma_spatial",
+            "type": "number",
+            "description": "Spatial luma strength.",
+            "default": 4
+          },
+          {
+            "name": "chroma_spatial",
+            "type": "number",
+            "description": "Spatial chroma strength.",
+            "default": 3
+          },
+          {
+            "name": "luma_tmp",
+            "type": "number",
+            "description": "Temporal luma strength.",
+            "default": 6
+          },
+          {
+            "name": "chroma_tmp",
+            "type": "number",
+            "description": "Temporal chroma strength.",
+            "default": 4
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Great all-purpose denoiser for live action or animation."
+      },
+      {
+        "label": "Non-Local Means Denoising",
+        "value": "nlmeans",
+        "description": "Applies non-local means denoising.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"nlmeans=s=1.5:p=7:r=15\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "s",
+            "type": "number",
+            "description": "Strength (≥ 0.0).",
+            "default": 1.5,
+            "min": 0
+          },
+          {
+            "name": "p",
+            "type": "integer",
+            "description": "Patch size (≥ 1).",
+            "default": 7,
+            "min": 1
+          },
+          {
+            "name": "r",
+            "type": "integer",
+            "description": "Research size (≥ 1).",
+            "default": 15,
+            "min": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Best for severe noise and large patches; slow but high quality."
+      },
+      {
+        "label": "DCT Denoise",
+        "value": "dctdnoiz",
+        "description": "Denoising using Discrete Cosine Transform.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"dctdnoiz=sigma=10\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "sigma",
+            "type": "number",
+            "description": "Std dev for noise (≥ 0.0).",
+            "default": 10,
+            "min": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Frequency-based denoising. Good for tape or low-light sources."
+      },
+      {
+        "label": "Derain (AI)",
+        "value": "derain",
+        "description": "Removes rain artifacts using deep learning.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"derain=dnn_backend=native\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "dnn_backend",
+            "type": "string",
+            "description": "DNN backend (native, opencl, etc.).",
+            "default": "native"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Requires FFmpeg built with DNN support. For rainy surveillance/video."
+      },
+      {
+        "label": "Denoise (VAAPI HW-Accel)",
+        "value": "denoise_vaapi",
+        "description": "Denoises using VAAPI hardware acceleration.",
+        "examples": [
+          "ffmpeg -hwaccel vaapi -i input.mp4 -vf \"denoise_vaapi=denoise=0.5\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "denoise",
+            "type": "number",
+            "description": "Denoising strength (≥ 0.0).",
+            "default": 0.5,
+            "min": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Requires VAAPI-enabled hardware and drivers."
+      },
+      {
+        "label": "Noise (Additive)",
+        "value": "noise",
+        "description": "Adds noise to the video.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"noise=alls=10:allf=t\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "alls",
+            "type": "integer",
+            "description": "Noise strength for all planes.",
+            "default": 10
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Use for film grain or stylized noise. 'allf' sets noise pattern."
+      },
+      {
+        "label": "Bitplane Noise",
+        "value": "bitplanenoise",
+        "description": "Applies bitplane noise filtering.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"bitplanenoise=bitplane=2\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "bitplane",
+            "type": "integer",
+            "description": "Which bitplane to filter (0-7).",
+            "default": 2,
+            "min": 0,
+            "max": 7
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Rarely used. Filters noise at specific bit-depths."
+      }
+    ]
+  },
+  {
+    "category": "Sharpen",
+    "filters": [
+      {
+        "label": "Unsharp Mask",
+        "value": "unsharp",
+        "description": "Applies unsharp masking to sharpen the video.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"unsharp=5:5:1.0:5:5:0.0\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "luma_msize_x",
+            "type": "integer",
+            "description": "Luma matrix horizontal size (odd integer).",
+            "default": 5,
+            "min": 3
+          },
+          {
+            "name": "luma_msize_y",
+            "type": "integer",
+            "description": "Luma matrix vertical size (odd integer).",
+            "default": 5,
+            "min": 3
+          },
+          {
+            "name": "luma_amount",
+            "type": "number",
+            "description": "Luma effect strength.",
+            "default": 1
+          },
+          {
+            "name": "chroma_msize_x",
+            "type": "integer",
+            "description": "Chroma matrix horizontal size (odd integer).",
+            "default": 5,
+            "min": 3
+          },
+          {
+            "name": "chroma_msize_y",
+            "type": "integer",
+            "description": "Chroma matrix vertical size (odd integer).",
+            "default": 5,
+            "min": 3
+          },
+          {
+            "name": "chroma_amount",
+            "type": "number",
+            "description": "Chroma effect strength.",
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Can be used for gentle sharpening or strong edge enhancement depending on amount values."
+      }
+    ]
+  },
+  {
+    "category": "Color, Tone, and Exposure Adjustments",
+    "filters": [
+      {
+        "label": "Equalizer",
+        "value": "eq",
+        "description": "Equalizer for brightness, contrast, gamma, and saturation.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"eq=contrast=1.5:brightness=0.1:saturation=1.2:gamma=1.0\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "contrast",
+            "type": "number",
+            "description": "Adjust contrast.",
+            "default": 1
+          },
+          {
+            "name": "brightness",
+            "type": "number",
+            "description": "Adjust brightness.",
+            "default": 0
+          },
+          {
+            "name": "saturation",
+            "type": "number",
+            "description": "Adjust saturation.",
+            "default": 1
+          },
+          {
+            "name": "gamma",
+            "type": "number",
+            "description": "Adjust gamma.",
+            "default": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Ideal for basic color/contrast fixes. Parameters are all optional and can be used in any combination."
+      },
+      {
+        "label": "Hue",
+        "value": "hue",
+        "description": "Adjust hue, saturation, and brightness of the video.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"hue=s=2:h=45\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "h",
+            "type": "number",
+            "description": "Set the hue shift in degrees (-180 to 180).",
+            "default": 0,
+            "min": -180,
+            "max": 180
+          },
+          {
+            "name": "s",
+            "type": "number",
+            "description": "Set saturation multiplier (1.0 = no change).",
+            "default": 1
+          },
+          {
+            "name": "b",
+            "type": "number",
+            "description": "Set brightness multiplier (1.0 = no change).",
+            "default": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "H (angle in radians) is rarely needed. 's' is for vibrancy, 'h' is the color wheel offset."
+      },
+      {
+        "label": "Curves",
+        "value": "curves",
+        "description": "Apply RGB or luma curves (like Photoshop curves).",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"curves=red='0/0 0.5/1 1/1'\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "preset",
+            "type": "string",
+            "description": "Predefined curve preset, e.g., color_negative, cross_process.",
+            "options": [
+              "none",
+              "color_negative",
+              "cross_process",
+              "strong_contrast",
+              "medium_contrast"
+            ],
+            "default": "none"
+          },
+          {
+            "name": "master",
+            "type": "string",
+            "description": "Curve points for master channel, e.g., '0/0 0.5/1 1/0'."
+          },
+          {
+            "name": "red",
+            "type": "string",
+            "description": "Curve points for red channel."
+          },
+          {
+            "name": "green",
+            "type": "string",
+            "description": "Curve points for green channel."
+          },
+          {
+            "name": "blue",
+            "type": "string",
+            "description": "Curve points for blue channel."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Preset is optional; otherwise use custom points for fine tuning."
+      },
+      {
+        "label": "LUT/Lookup Table",
+        "value": "lut",
+        "description": "Apply lookup tables for color grading. (Includes lut, lutrgb, lutyuv, lut1d, lut2, lut3d.)",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"lut3d=filmlook.cube\" output.mp4",
+          "ffmpeg -i input.mp4 -vf \"lutrgb=r='val*0.8':g='val*1.1':b='val'\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "type": "string",
+            "description": "For 3D LUT: path to .cube or LUT file."
+          },
+          {
+            "name": "r",
+            "type": "string",
+            "description": "LUT expression for red."
+          },
+          {
+            "name": "g",
+            "type": "string",
+            "description": "LUT expression for green."
+          },
+          {
+            "name": "b",
+            "type": "string",
+            "description": "LUT expression for blue."
+          },
+          {
+            "name": "a",
+            "type": "string",
+            "description": "LUT expression for alpha."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "lut3d requires a .cube file. Expressions can be used for basic LUT math."
+      },
+      {
+        "label": "PSNR",
+        "value": "psnr",
+        "description": "Peak Signal-to-Noise Ratio for quality measurement (diagnostic, requires 2 inputs).",
+        "examples": [
+          "ffmpeg -i ref.mp4 -i test.mp4 -lavfi \"psnr\" -f null -"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "null",
+        "agent_notes": "Use for comparing original vs. processed video quality. Output is log only."
+      },
+      {
+        "label": "SSIM",
+        "value": "ssim",
+        "description": "Structural Similarity Index for quality measurement (diagnostic, requires 2 inputs).",
+        "examples": [
+          "ffmpeg -i ref.mp4 -i test.mp4 -lavfi \"ssim\" -f null -"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "null",
+        "agent_notes": "Also for original vs. processed quality. Output is log only."
+      },
+      {
+        "label": "Exposure",
+        "value": "exposure",
+        "description": "Adjust exposure (photographic exposure).",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"exposure=0.5\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "exposure",
+            "type": "number",
+            "description": "Exposure value.",
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Ideal for fine-tuning image brightness."
+      },
+      {
+        "label": "Color Balance",
+        "value": "colorbalance",
+        "description": "Adjust balance of shadows, midtones, highlights.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"colorbalance=rs=-0.3:gs=0.5:bs=0.2\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "rs",
+            "type": "number",
+            "description": "Shadows: red (-1.0 to 1.0)",
+            "default": 0
+          },
+          {
+            "name": "gs",
+            "type": "number",
+            "description": "Shadows: green (-1.0 to 1.0)",
+            "default": 0
+          },
+          {
+            "name": "bs",
+            "type": "number",
+            "description": "Shadows: blue (-1.0 to 1.0)",
+            "default": 0
+          },
+          {
+            "name": "rm",
+            "type": "number",
+            "description": "Midtones: red (-1.0 to 1.0)",
+            "default": 0
+          },
+          {
+            "name": "gm",
+            "type": "number",
+            "description": "Midtones: green (-1.0 to 1.0)",
+            "default": 0
+          },
+          {
+            "name": "bm",
+            "type": "number",
+            "description": "Midtones: blue (-1.0 to 1.0)",
+            "default": 0
+          },
+          {
+            "name": "rh",
+            "type": "number",
+            "description": "Highlights: red (-1.0 to 1.0)",
+            "default": 0
+          },
+          {
+            "name": "gh",
+            "type": "number",
+            "description": "Highlights: green (-1.0 to 1.0)",
+            "default": 0
+          },
+          {
+            "name": "bh",
+            "type": "number",
+            "description": "Highlights: blue (-1.0 to 1.0)",
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Balance color for specific tonal ranges. For white balance, try grayworld."
+      },
+      {
+        "label": "Color Channel Mixer",
+        "value": "colorchannelmixer",
+        "description": "Advanced channel mixing—remix R/G/B/A channels.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"colorchannelmixer=.3:0:.7:0:.5:.5:0:0:.1:.3:.6:0:0:0:0:1\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "rr",
+            "type": "number",
+            "description": "Red from Red.",
+            "default": 1
+          },
+          {
+            "name": "rg",
+            "type": "number",
+            "description": "Red from Green.",
+            "default": 0
+          },
+          {
+            "name": "rb",
+            "type": "number",
+            "description": "Red from Blue.",
+            "default": 0
+          },
+          {
+            "name": "gr",
+            "type": "number",
+            "description": "Green from Red.",
+            "default": 0
+          },
+          {
+            "name": "gg",
+            "type": "number",
+            "description": "Green from Green.",
+            "default": 1
+          },
+          {
+            "name": "gb",
+            "type": "number",
+            "description": "Green from Blue.",
+            "default": 0
+          },
+          {
+            "name": "br",
+            "type": "number",
+            "description": "Blue from Red.",
+            "default": 0
+          },
+          {
+            "name": "bg",
+            "type": "number",
+            "description": "Blue from Green.",
+            "default": 0
+          },
+          {
+            "name": "bb",
+            "type": "number",
+            "description": "Blue from Blue.",
+            "default": 1
+          },
+          {
+            "name": "ar",
+            "type": "number",
+            "description": "Alpha from Red.",
+            "default": 0
+          },
+          {
+            "name": "ag",
+            "type": "number",
+            "description": "Alpha from Green.",
+            "default": 0
+          },
+          {
+            "name": "ab",
+            "type": "number",
+            "description": "Alpha from Blue.",
+            "default": 0
+          },
+          {
+            "name": "aa",
+            "type": "number",
+            "description": "Alpha from Alpha.",
+            "default": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Allows creative remapping of color channels. Can produce B&W, sepia, or artistic effects."
+      },
+      {
+        "label": "Color Correct",
+        "value": "colorcorrect",
+        "description": "Correct color using gamma/black/white/contrast.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"colorcorrect=rl=0.9:gl=1:bl=1.1\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "rl",
+            "type": "number",
+            "description": "Red lift.",
+            "default": 1
+          },
+          {
+            "name": "bl",
+            "type": "number",
+            "description": "Blue lift.",
+            "default": 1
+          },
+          {
+            "name": "gl",
+            "type": "number",
+            "description": "Green lift.",
+            "default": 1
+          },
+          {
+            "name": "rm",
+            "type": "number",
+            "description": "Red multiply.",
+            "default": 1
+          },
+          {
+            "name": "bm",
+            "type": "number",
+            "description": "Blue multiply.",
+            "default": 1
+          },
+          {
+            "name": "gm",
+            "type": "number",
+            "description": "Green multiply.",
+            "default": 1
+          },
+          {
+            "name": "ro",
+            "type": "number",
+            "description": "Red offset.",
+            "default": 0
+          },
+          {
+            "name": "bo",
+            "type": "number",
+            "description": "Blue offset.",
+            "default": 0
+          },
+          {
+            "name": "go",
+            "type": "number",
+            "description": "Green offset.",
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Adjust black/white point, gamma, and bias for each channel."
+      },
+      {
+        "label": "Color Key",
+        "value": "colorkey",
+        "description": "Make a specific color transparent (key out).",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"colorkey=0x00FF00:0.3:0.1\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "color",
+            "type": "string",
+            "description": "Color (hex or name)."
+          },
+          {
+            "name": "similarity",
+            "type": "number",
+            "description": "Similarity (0.01–1.0).",
+            "default": 0.3,
+            "min": 0.01,
+            "max": 1
+          },
+          {
+            "name": "blend",
+            "type": "number",
+            "description": "Blend (0–1.0).",
+            "default": 0.1,
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Use for green/blue screen effects. chromakey is similar but tuned for green."
+      },
+      {
+        "label": "Color Matrix / Color Space",
+        "value": "colormatrix",
+        "description": "Change color space (e.g., BT.601 to BT.709).",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"colorspace=all=bt709:iall=bt601\" output.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "src",
+            "type": "string",
+            "description": "Source color space (e.g., bt601, bt709, bt2020)."
+          },
+          {
+            "name": "dst",
+            "type": "string",
+            "description": "Destination color space."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "For accurate color conversion between standards. Used in pro workflows."
+      },
+      {
+        "label": "Grayworld AWB",
+        "value": "grayworld",
+        "description": "Automatic white balance using gray world assumption.",
+        "examples": [
+          "ffmpeg -i input.mp4 -vf \"grayworld\" output.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "No parameters. Used for quick auto-white-balance."
+      },
+      {
+        "label": "Histogram Equalization",
+        "value": "histeq",
+        "description": "Applies global histogram equalization to the input video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"histeq=strength=0.8\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "strength",
+            "type": "number",
+            "description": "Strength of the equalization (0.0–1.0).",
+            "default": 0.2,
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Use for boosting global contrast; can be too strong at high values."
+      },
+      {
+        "label": "Histogram Visualization",
+        "value": "histogram",
+        "description": "Overlay histogram visualizations on the video (diagnostic, not for color adjustment).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"histogram=display_mode=overlay:level_height=60\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "display_mode",
+            "type": "enum",
+            "description": "Histogram mode (e.g., 'overlay', 'parade', 'stack').",
+            "options": [
+              "overlay",
+              "parade",
+              "stack"
+            ],
+            "default": "overlay"
+          },
+          {
+            "name": "level_height",
+            "type": "integer",
+            "description": "Height of histogram graph.",
+            "default": 60
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Visualization/diagnostics only; not for correction."
+      },
+      {
+        "label": "GradFun Dithering",
+        "value": "gradfun",
+        "description": "Removes banding artifacts using dithering.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"gradfun=strength=2:radius=12\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "strength",
+            "type": "number",
+            "description": "Dithering strength (0–100).",
+            "default": 1.2,
+            "min": 0,
+            "max": 100
+          },
+          {
+            "name": "radius",
+            "type": "integer",
+            "description": "Dithering radius (1–32).",
+            "default": 16,
+            "min": 1,
+            "max": 32
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Useful for removing gradient banding in flat backgrounds."
+      },
+      {
+        "label": "Hald CLUT",
+        "value": "haldclut",
+        "description": "Apply a 3D LUT to video using a Hald CLUT image.",
+        "examples": [
+          "ffmpeg -i in.mp4 -i hald.png -filter_complex \"haldclut\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "source",
+            "type": "string",
+            "description": "Path to Hald CLUT PNG image."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "mp4",
+        "agent_notes": "Requires both video and Hald CLUT image as inputs."
+      },
+      {
+        "label": "Color Temperature",
+        "value": "colortemperature",
+        "description": "Adjust white balance to a specific color temperature.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"colortemperature=8000:0.5\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "temp",
+            "type": "integer",
+            "description": "Target color temperature in Kelvin (1000–40000).",
+            "default": 6500,
+            "min": 1000,
+            "max": 40000
+          },
+          {
+            "name": "mix",
+            "type": "number",
+            "description": "Blend amount (0–1, 1=full adjustment).",
+            "default": 1,
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Ideal for quick daylight/tungsten/creative white balance tweaks."
+      },
+      {
+        "label": "Selective Color",
+        "value": "selectivecolor",
+        "description": "Selective color correction. Advanced filter; exposes controls for primary and secondary colors.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"selectivecolor=red=-0.5:yellow=0.3\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "red",
+            "type": "number",
+            "description": "Adjust red channel (-1.0 to 1.0)."
+          },
+          {
+            "name": "yellow",
+            "type": "number",
+            "description": "Adjust yellow channel (-1.0 to 1.0)."
+          },
+          {
+            "name": "green",
+            "type": "number",
+            "description": "Adjust green channel (-1.0 to 1.0)."
+          },
+          {
+            "name": "cyan",
+            "type": "number",
+            "description": "Adjust cyan channel (-1.0 to 1.0)."
+          },
+          {
+            "name": "blue",
+            "type": "number",
+            "description": "Adjust blue channel (-1.0 to 1.0)."
+          },
+          {
+            "name": "magenta",
+            "type": "number",
+            "description": "Adjust magenta channel (-1.0 to 1.0)."
+          },
+          {
+            "name": "black",
+            "type": "number",
+            "description": "Adjust black channel (-1.0 to 1.0)."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Fine-tune a single color without affecting the rest of the image."
+      },
+      {
+        "label": "Limiter",
+        "value": "limiter",
+        "description": "Clamp output to a legal video signal range.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"limiter=min=16:max=235\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "min",
+            "type": "integer",
+            "description": "Minimum value for Y/U/V channels."
+          },
+          {
+            "name": "max",
+            "type": "integer",
+            "description": "Maximum value for Y/U/V channels."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "For broadcast-safe output or limiting extreme values."
+      },
+      {
+        "label": "Signal/Framing/Timing Utilities",
+        "value": "setrange_setparams_setdar_setsar_settb_setfield_setpts",
+        "description": "Utility filters for signal range, sample/display aspect ratio, timebase, field order, and timestamp transforms.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"setdar=16/9,setfield=bff,setpts=PTS/1.25\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "setdar",
+            "type": "string",
+            "description": "Display aspect ratio (e.g., 16/9)."
+          },
+          {
+            "name": "setsar",
+            "type": "string",
+            "description": "Sample aspect ratio (e.g., 1)."
+          },
+          {
+            "name": "settb",
+            "type": "string",
+            "description": "Set timebase (e.g., AVTB)."
+          },
+          {
+            "name": "setfield",
+            "type": "string",
+            "description": "Set field order (e.g., bff, tff, prog)."
+          },
+          {
+            "name": "setpts",
+            "type": "string",
+            "description": "Set timestamps (expression, e.g., PTS/2)."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Mostly for expert/workflow automation or fixing file properties."
+      }
+    ]
+  },
+  {
+    "category": "Transform, Resize, Crop, Rotate",
+    "filters": [
+      {
+        "label": "Scale",
+        "value": "scale",
+        "description": "Resize video frames to given width/height (pixels or expressions).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"scale=1920:1080\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"scale=iw/2:ih/2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "width",
+            "type": "string",
+            "description": "Target width (integer or expression, e.g. 1280, iw/2)."
+          },
+          {
+            "name": "height",
+            "type": "string",
+            "description": "Target height (integer or expression, e.g. 720, ih/2)."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "iw/ih are input width/height. Use -1 to auto-calc based on aspect ratio."
+      },
+      {
+        "label": "Scale with Reference",
+        "value": "scale2ref",
+        "description": "Resize video stream with respect to another (reference) stream.",
+        "examples": [
+          "ffmpeg -i fg.mp4 -i bg.mp4 -filter_complex \"[0:v][1:v]scale2ref=w=oh*mdar:h=360[fg][bg]\" ..."
+        ],
+        "parameters": [
+          {
+            "name": "w",
+            "type": "string",
+            "description": "Target width (expression using main/ref dimensions)."
+          },
+          {
+            "name": "h",
+            "type": "string",
+            "description": "Target height (expression using main/ref dimensions)."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "mp4",
+        "agent_notes": "Used for overlays or composite layouts."
+      },
+      {
+        "label": "Hardware-accelerated Scaling",
+        "value": "scale_cuda_scale_npp_scale_qsv_scale_vaapi",
+        "description": "Scale using hardware acceleration (CUDA, NPP, QSV, VAAPI).",
+        "examples": [
+          "ffmpeg -hwaccel cuda -i in.mp4 -vf \"scale_cuda=1280:720\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "width",
+            "type": "string",
+            "description": "Target width (hardware dependent)."
+          },
+          {
+            "name": "height",
+            "type": "string",
+            "description": "Target height (hardware dependent)."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Requires appropriate hardware and drivers."
+      },
+      {
+        "label": "Squeeze",
+        "value": "squeeze",
+        "description": "Non-uniformly resize (stretch/compress) video along axes.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"squeeze=w=1.5:h=1\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "w",
+            "type": "number",
+            "description": "Width scaling ratio (e.g., 1.5 = 150%)."
+          },
+          {
+            "name": "h",
+            "type": "number",
+            "description": "Height scaling ratio (e.g., 0.75 = 75%)."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Good for 'anamorphic' effects or fixing aspect."
+      },
+      {
+        "label": "Crop",
+        "value": "crop",
+        "description": "Crop out a rectangle from the video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"crop=640:360:100:50\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"crop=iw/2:ih/2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "w",
+            "type": "string",
+            "description": "Crop width (px or expression)."
+          },
+          {
+            "name": "h",
+            "type": "string",
+            "description": "Crop height (px or expression)."
+          },
+          {
+            "name": "x",
+            "type": "string",
+            "description": "X position (left offset, px or expression)."
+          },
+          {
+            "name": "y",
+            "type": "string",
+            "description": "Y position (top offset, px or expression)."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "All expressions can use iw, ih, etc."
+      },
+      {
+        "label": "Crop Detect",
+        "value": "cropdetect",
+        "description": "Auto-detect black borders for cropping (analyze, not transform).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"cropdetect=limit=24:round=2\" -f null -"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "type": "integer",
+            "description": "Threshold for black detection.",
+            "default": 24
+          },
+          {
+            "name": "round",
+            "type": "integer",
+            "description": "Round output values to a multiple.",
+            "default": 2
+          },
+          {
+            "name": "reset",
+            "type": "integer",
+            "description": "Reset counter every n frames.",
+            "default": 0
+          },
+          {
+            "name": "detect_limit",
+            "type": "number",
+            "description": "Advanced detection parameter."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "null",
+        "agent_notes": "Use for automation—parses output for crop settings."
+      },
+      {
+        "label": "Pad",
+        "value": "pad",
+        "description": "Add borders or padding around the video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"pad=1280:720:100:50:black\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "w",
+            "type": "string",
+            "description": "Output width."
+          },
+          {
+            "name": "h",
+            "type": "string",
+            "description": "Output height."
+          },
+          {
+            "name": "x",
+            "type": "string",
+            "description": "Horizontal offset for input."
+          },
+          {
+            "name": "y",
+            "type": "string",
+            "description": "Vertical offset for input."
+          },
+          {
+            "name": "color",
+            "type": "string",
+            "description": "Border color (e.g., black, white, hex).",
+            "default": "black"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Can create letterbox/pillarbox or custom frame."
+      },
+      {
+        "label": "Fill Borders",
+        "value": "fillborders",
+        "description": "Extend edge pixels to fill borders.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"fillborders=left=10:right=10:mode=mirror\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "left",
+            "type": "integer",
+            "description": "Width in px to fill at left.",
+            "default": 0
+          },
+          {
+            "name": "right",
+            "type": "integer",
+            "description": "Width in px to fill at right.",
+            "default": 0
+          },
+          {
+            "name": "top",
+            "type": "integer",
+            "description": "Width in px to fill at top.",
+            "default": 0
+          },
+          {
+            "name": "bottom",
+            "type": "integer",
+            "description": "Width in px to fill at bottom.",
+            "default": 0
+          },
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "How to generate fill (mirror, smear, reflect, wrap).",
+            "options": [
+              "mirror",
+              "smear",
+              "reflect",
+              "wrap"
+            ],
+            "default": "mirror"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Edge-aware padding, often for portrait->landscape conversions."
+      },
+      {
+        "label": "Time Pad",
+        "value": "tpad",
+        "description": "Add frames at start/end (e.g., freeze, repeat, blank).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"tpad=stop_duration=2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "start_duration",
+            "type": "number",
+            "description": "Duration in seconds to pad at start.",
+            "default": 0
+          },
+          {
+            "name": "stop_duration",
+            "type": "number",
+            "description": "Duration in seconds to pad at end.",
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Use for 'freeze frame' or looping."
+      },
+      {
+        "label": "Rotate",
+        "value": "rotate",
+        "description": "Rotate video frames by arbitrary angles.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"rotate=PI/6:fillcolor=white\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "angle",
+            "type": "string",
+            "description": "Angle in radians (e.g., PI/2, PI)."
+          },
+          {
+            "name": "ow",
+            "type": "string",
+            "description": "Output width (expression or integer)."
+          },
+          {
+            "name": "oh",
+            "type": "string",
+            "description": "Output height (expression or integer)."
+          },
+          {
+            "name": "fillcolor",
+            "type": "string",
+            "description": "Fill color for uncovered regions (e.g., 'white', 'black', '#RRGGBB')."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Horizontal Flip",
+        "value": "hflip",
+        "description": "Flip video frames horizontally.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"hflip\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Vertical Flip",
+        "value": "vflip",
+        "description": "Flip video frames vertically.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"vflip\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Transpose",
+        "value": "transpose",
+        "description": "Quick rotate and/or flip by multiples of 90°.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"transpose=1\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "dir",
+            "type": "integer",
+            "description": "Direction: 0=90° cw+vertical flip, 1=90° cw, 2=90° ccw, 3=90° ccw+vertical flip.",
+            "default": 0,
+            "options": [
+              0,
+              1,
+              2,
+              3
+            ]
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Remap",
+        "value": "remap",
+        "description": "Warp/morph video by remapping pixels using external maps.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"remap=xmap=mapx.png:ymap=mapy.png\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "xmap",
+            "type": "string",
+            "description": "Path to X mapping file/image."
+          },
+          {
+            "name": "ymap",
+            "type": "string",
+            "description": "Path to Y mapping file/image."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 3,
+        "complex_filter": true,
+        "default_extension": "mp4",
+        "agent_notes": "Requires both map images as additional inputs."
+      },
+      {
+        "label": "Perspective",
+        "value": "perspective",
+        "description": "Apply a perspective transformation to the video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"perspective=x0=0:y0=0:x1=1920:y1=0:x2=1920:y2=1080:x3=0:y3=1080\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "x0",
+            "type": "integer",
+            "description": "Top-left X"
+          },
+          {
+            "name": "y0",
+            "type": "integer",
+            "description": "Top-left Y"
+          },
+          {
+            "name": "x1",
+            "type": "integer",
+            "description": "Top-right X"
+          },
+          {
+            "name": "y1",
+            "type": "integer",
+            "description": "Top-right Y"
+          },
+          {
+            "name": "x2",
+            "type": "integer",
+            "description": "Bottom-right X"
+          },
+          {
+            "name": "y2",
+            "type": "integer",
+            "description": "Bottom-right Y"
+          },
+          {
+            "name": "x3",
+            "type": "integer",
+            "description": "Bottom-left X"
+          },
+          {
+            "name": "y3",
+            "type": "integer",
+            "description": "Bottom-left Y"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "360° Projection",
+        "value": "v360",
+        "description": "360°/VR video projection transforms between mapping modes.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"v360=input=equirect:output=rectilinear:yaw=90\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "input",
+            "type": "string",
+            "description": "Input format (e.g., 'equirect', 'rectilinear', 'cube')."
+          },
+          {
+            "name": "output",
+            "type": "string",
+            "description": "Output format (e.g., 'equirect', 'rectilinear', 'cube')."
+          },
+          {
+            "name": "w",
+            "type": "integer",
+            "description": "Output width."
+          },
+          {
+            "name": "h",
+            "type": "integer",
+            "description": "Output height."
+          },
+          {
+            "name": "yaw",
+            "type": "number",
+            "description": "Yaw (rotation in degrees)."
+          },
+          {
+            "name": "pitch",
+            "type": "number",
+            "description": "Pitch (degrees)."
+          },
+          {
+            "name": "roll",
+            "type": "number",
+            "description": "Roll (degrees)."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Input/output types must be supported by FFmpeg build."
+      },
+      {
+        "label": "Zoom & Pan (Ken Burns)",
+        "value": "zoompan",
+        "description": "Zoom and pan effect over time for Ken Burns style animation.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"zoompan=z='min(zoom+0.0015,1.5)':d=125:x='iw/2':y='ih/2'\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "z",
+            "type": "string",
+            "description": "Zoom expression (e.g., 'min(zoom+0.0015,1.5)')."
+          },
+          {
+            "name": "x",
+            "type": "string",
+            "description": "Horizontal pan formula (e.g., 'iw/2')."
+          },
+          {
+            "name": "y",
+            "type": "string",
+            "description": "Vertical pan formula (e.g., 'ih/2')."
+          },
+          {
+            "name": "d",
+            "type": "integer",
+            "description": "Duration in frames."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      }
+    ]
+  },
+  {
+    "category": "Overlay, Merge, Compose, Draw",
+    "filters": [
+      {
+        "label": "Overlay",
+        "value": "overlay",
+        "description": "Overlay one video or image stream over another (picture-in-picture, watermark, etc.).",
+        "examples": [
+          "ffmpeg -i base.mp4 -i overlay.png -filter_complex \"overlay=x=10:y=20\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "x",
+            "type": "string",
+            "description": "Horizontal position (pixels or expressions, e.g. 10, main_w-overlay_w-10)",
+            "default": "0"
+          },
+          {
+            "name": "y",
+            "type": "string",
+            "description": "Vertical position (pixels or expressions)",
+            "default": "0"
+          },
+          {
+            "name": "eof_action",
+            "type": "enum",
+            "description": "Behavior at end-of-file (repeat, pass, endall)",
+            "options": [
+              "repeat",
+              "pass",
+              "endall"
+            ],
+            "default": "repeat"
+          },
+          {
+            "name": "shortest",
+            "type": "boolean",
+            "description": "Stop output when the shortest input ends (1 = true, 0 = false)",
+            "default": false
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "mp4",
+        "agent_notes": "Use for watermarks, subtitles, logos, PiP. Inputs: base video + overlay."
+      },
+      {
+        "label": "Alpha Merge",
+        "value": "alphamerge",
+        "description": "Combine a color video and an alpha (transparency) video/stream.",
+        "examples": [
+          "ffmpeg -i color.mp4 -i alpha.mp4 -filter_complex \"[0:v][1:v]alphamerge\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Masked Merge",
+        "value": "maskedmerge",
+        "description": "Merge two inputs using a third mask input.",
+        "examples": [
+          "ffmpeg -i a.mp4 -i b.mp4 -i mask.mp4 -filter_complex \"[0][1][2]maskedmerge\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "planes",
+            "type": "string",
+            "description": "Specify which color planes to use (e.g. 'all', 'y', 'u', 'v').",
+            "default": "all"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 3,
+        "complex_filter": true,
+        "default_extension": "mp4",
+        "agent_notes": "Inputs: main, secondary, mask."
+      },
+      {
+        "label": "Merge Planes",
+        "value": "mergeplanes",
+        "description": "Assemble a video from color planes of multiple sources.",
+        "examples": [
+          "ffmpeg -i a.mp4 -i b.mp4 -filter_complex \"[0][1]mergeplanes=map=0-0|1-1|1-2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "map",
+            "type": "string",
+            "description": "Plane mapping (e.g. '0-0|1-1|1-2' for src#-plane#)."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Masked Max",
+        "value": "maskedmax",
+        "description": "Merge pixel values of two inputs by mask (maximum).",
+        "examples": [
+          "ffmpeg -i a.mp4 -i b.mp4 -i mask.mp4 -filter_complex \"[0][1][2]maskedmax\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 3,
+        "complex_filter": true,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Masked Min",
+        "value": "maskedmin",
+        "description": "Merge pixel values of two inputs by mask (minimum).",
+        "examples": [
+          "ffmpeg -i a.mp4 -i b.mp4 -i mask.mp4 -filter_complex \"[0][1][2]maskedmin\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 3,
+        "complex_filter": true,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Masked Clamp",
+        "value": "maskedclamp",
+        "description": "Clamp pixel values between two inputs using a mask.",
+        "examples": [
+          "ffmpeg -i a.mp4 -i b.mp4 -i mask.mp4 -filter_complex \"[0][1][2]maskedclamp\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 3,
+        "complex_filter": true,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Draw Box",
+        "value": "drawbox",
+        "description": "Draw a colored rectangle on the video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"drawbox=x=100:y=100:w=200:h=100:color=red@0.5:thickness=10\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "x",
+            "type": "integer",
+            "description": "Top-left X (px)"
+          },
+          {
+            "name": "y",
+            "type": "integer",
+            "description": "Top-left Y (px)"
+          },
+          {
+            "name": "w",
+            "type": "integer",
+            "description": "Width (px)"
+          },
+          {
+            "name": "h",
+            "type": "integer",
+            "description": "Height (px)"
+          },
+          {
+            "name": "color",
+            "type": "string",
+            "description": "Box color (e.g., red@0.5, #RRGGBBAA)"
+          },
+          {
+            "name": "thickness",
+            "type": "string",
+            "description": "Border thickness (set to 'fill' to fill)"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Draw Text",
+        "value": "drawtext",
+        "description": "Draw text string onto the video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"drawtext=text='Hello!':x=10:y=10:fontsize=32:fontcolor=white\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "string",
+            "description": "Text to draw"
+          },
+          {
+            "name": "x",
+            "type": "string",
+            "description": "X position (expression or px)"
+          },
+          {
+            "name": "y",
+            "type": "string",
+            "description": "Y position (expression or px)"
+          },
+          {
+            "name": "fontfile",
+            "type": "string",
+            "description": "Path to .ttf font file (optional)"
+          },
+          {
+            "name": "fontsize",
+            "type": "integer",
+            "description": "Font size"
+          },
+          {
+            "name": "fontcolor",
+            "type": "string",
+            "description": "Font color (e.g., white, #RRGGBB)"
+          },
+          {
+            "name": "box",
+            "type": "boolean",
+            "description": "Draw background box for text"
+          },
+          {
+            "name": "boxcolor",
+            "type": "string",
+            "description": "Color of box background"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Draw Graph",
+        "value": "drawgraph",
+        "description": "Draw a graph from signal values (advanced).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"drawgraph=m1='sin(2*PI*t)':fg=yellow:bg=black\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "m1",
+            "type": "string",
+            "description": "Expression for main signal."
+          },
+          {
+            "name": "m2",
+            "type": "string",
+            "description": "Expression for second signal (optional)."
+          },
+          {
+            "name": "fg",
+            "type": "string",
+            "description": "Foreground color."
+          },
+          {
+            "name": "bg",
+            "type": "string",
+            "description": "Background color."
+          },
+          {
+            "name": "mode",
+            "type": "string",
+            "description": "Mode of graph."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Draw Grid",
+        "value": "drawgrid",
+        "description": "Draw a customizable grid over the video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"drawgrid=x=100:y=100:color=green@0.8:thickness=2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "x",
+            "type": "integer",
+            "description": "Horizontal grid spacing (px)"
+          },
+          {
+            "name": "y",
+            "type": "integer",
+            "description": "Vertical grid spacing (px)"
+          },
+          {
+            "name": "width",
+            "type": "integer",
+            "description": "Cell width (px)"
+          },
+          {
+            "name": "height",
+            "type": "integer",
+            "description": "Cell height (px)"
+          },
+          {
+            "name": "color",
+            "type": "string",
+            "description": "Grid line color (e.g., #00FF00@0.5)"
+          },
+          {
+            "name": "thickness",
+            "type": "integer",
+            "description": "Line thickness (px)"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Horizontal Stack",
+        "value": "hstack",
+        "description": "Stack videos horizontally (side by side).",
+        "examples": [
+          "ffmpeg -i a.mp4 -i b.mp4 -filter_complex \"[0:v][1:v]hstack=inputs=2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "inputs",
+            "type": "integer",
+            "description": "Number of input streams."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Vertical Stack",
+        "value": "vstack",
+        "description": "Stack videos vertically (top and bottom).",
+        "examples": [
+          "ffmpeg -i a.mp4 -i b.mp4 -filter_complex \"[0:v][1:v]vstack=inputs=2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "inputs",
+            "type": "integer",
+            "description": "Number of input streams."
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Tile",
+        "value": "tile",
+        "description": "Arrange frames or streams in a grid (tile) layout.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"tile=layout=2x2:margin=5:padding=2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "layout",
+            "type": "string",
+            "description": "Grid layout as rows x columns (e.g., 2x2)"
+          },
+          {
+            "name": "margin",
+            "type": "integer",
+            "description": "Margin between tiles (px)"
+          },
+          {
+            "name": "padding",
+            "type": "integer",
+            "description": "Padding inside each tile (px)"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Can also tile multiple inputs live in filter_complex."
+      },
+      {
+        "label": "Palette Generation",
+        "value": "palettegen",
+        "description": "Generate an optimized color palette (often for GIF creation).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"palettegen\" palette.png"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "png",
+        "agent_notes": "Typically used as a preprocessing step for GIF export."
+      },
+      {
+        "label": "Palette Use",
+        "value": "paletteuse",
+        "description": "Use a palette image to produce a high-quality GIF or indexed PNG.",
+        "examples": [
+          "ffmpeg -i in.mp4 -i palette.png -filter_complex \"paletteuse\" out.gif"
+        ],
+        "parameters": [
+          {
+            "name": "dither",
+            "type": "string",
+            "description": "Dithering algorithm (e.g., bayer, sierra2, floyd_steinberg, none).",
+            "default": "floyd_steinberg"
+          },
+          {
+            "name": "bayer_scale",
+            "type": "integer",
+            "description": "Bayer dithering scale (default 1)"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "gif",
+        "agent_notes": "For high-quality GIFs: run palettegen first, then paletteuse."
+      }
+    ]
+  },
+  {
+    "category": "Timing, Framerate, Playback",
+    "filters": [
+      {
+        "label": "FPS (Frames Per Second)",
+        "value": "fps",
+        "description": "Set the output frame rate, dropping or duplicating frames as needed.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"fps=30\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"fps=60:round=up\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "fps",
+            "type": "number",
+            "description": "Target frames per second",
+            "default": 30
+          },
+          {
+            "name": "round",
+            "type": "enum",
+            "description": "Rounding method",
+            "options": [
+              "zero",
+              "inf",
+              "down",
+              "up",
+              "near"
+            ],
+            "default": "near"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Frame Rate (Advanced)",
+        "value": "framerate",
+        "description": "Advanced frame rate interpolation with scene detection.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"framerate=fps=60:scene=0.1\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "fps",
+            "type": "number",
+            "description": "Target output frame rate",
+            "default": 30
+          },
+          {
+            "name": "interp_start",
+            "type": "number",
+            "description": "Start frame for interpolation",
+            "default": 0
+          },
+          {
+            "name": "interp_end",
+            "type": "number",
+            "description": "End frame for interpolation",
+            "default": 255
+          },
+          {
+            "name": "scene",
+            "type": "number",
+            "description": "Scene change threshold (0.0–1.0)",
+            "default": 0.1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Frame Step",
+        "value": "framestep",
+        "description": "Keep every Nth frame, drop others (downsampling).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"framestep=step=5\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "step",
+            "type": "number",
+            "description": "Step size: only every Nth frame is kept",
+            "default": 2
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Set Presentation Timestamp",
+        "value": "setpts",
+        "description": "Speed up or slow down video by changing presentation timestamps.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"setpts=PTS/2\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"setpts=PTS*1.5\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "PTS",
+            "type": "string",
+            "description": "Timestamp expression (e.g. PTS/2, PTS*1.5)",
+            "default": "PTS"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "PTS/2 = 2x speed; PTS*2 = 0.5x speed."
+      },
+      {
+        "label": "Temporal Blend",
+        "value": "tblend",
+        "description": "Blend frames together for motion blur or ghosting.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"tblend=all_mode=average,framestep=2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "all_mode",
+            "type": "enum",
+            "options": [
+              "average",
+              "addition",
+              "multiply",
+              "screen",
+              "darken",
+              "lighten"
+            ],
+            "description": "Blend mode for all color planes.",
+            "default": "average"
+          },
+          {
+            "name": "opacity",
+            "type": "number",
+            "description": "Opacity (0.0–1.0)",
+            "default": 1
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Frame Blend",
+        "value": "blend",
+        "description": "Blend two frames using a given mode and opacity.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"blend=all_mode='addition':opacity=0.5\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "all_mode",
+            "type": "string",
+            "description": "Blend mode (e.g., average, addition, multiply, screen, darken, lighten)",
+            "default": "average"
+          },
+          {
+            "name": "opacity",
+            "type": "number",
+            "description": "Blend opacity (0.0–1.0)",
+            "default": 1
+          },
+          {
+            "name": "threshold",
+            "type": "number",
+            "description": "Threshold value (optional)",
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Motion Interpolation",
+        "value": "minterpolate",
+        "description": "Generate intermediate frames for smooth slow motion or framerate conversion.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:vsbmc=1\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "fps",
+            "type": "number",
+            "description": "Target FPS",
+            "default": 30
+          },
+          {
+            "name": "mi_mode",
+            "type": "enum",
+            "options": [
+              "mci",
+              "blend",
+              "dup"
+            ],
+            "description": "Interpolation mode",
+            "default": "mci"
+          },
+          {
+            "name": "mc_mode",
+            "type": "enum",
+            "options": [
+              "aobmc",
+              "obmc"
+            ],
+            "description": "Motion compensation mode",
+            "default": "aobmc"
+          },
+          {
+            "name": "vsbmc",
+            "type": "boolean",
+            "description": "Variable size block motion compensation",
+            "default": true
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "MC Deinterlace",
+        "value": "mcdeint",
+        "description": "Motion-compensated deinterlacing.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"mcdeint=mode=fast\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "type": "enum",
+            "options": [
+              "fast",
+              "medium",
+              "slow",
+              "extra_slow"
+            ],
+            "description": "Quality/speed preset",
+            "default": "fast"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Pullup / Telecine",
+        "value": "pullup",
+        "description": "Restore original progressive frames from telecined/interlaced video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"pullup\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"telecine\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Reverse Playback",
+        "value": "reverse",
+        "description": "Play the video backwards.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"reverse\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Audio must be reversed separately."
+      },
+      {
+        "label": "Repeat Fields",
+        "value": "repeatfields",
+        "description": "Repeat video fields for field-based workflows.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"repeatfields\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Double Weave",
+        "value": "doubleweave",
+        "description": "Weave fields together to produce a new frame sequence.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"doubleweave\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Trim",
+        "value": "trim",
+        "description": "Trim video to a specific section by time or frame.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"trim=start=5:end=10\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"trim=start_frame=50:end_frame=150\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "type": "number",
+            "description": "Start time (seconds)",
+            "default": 0
+          },
+          {
+            "name": "end",
+            "type": "number",
+            "description": "End time (seconds)",
+            "default": 10
+          },
+          {
+            "name": "start_frame",
+            "type": "number",
+            "description": "Start frame (overrides 'start' if set)",
+            "default": null
+          },
+          {
+            "name": "end_frame",
+            "type": "number",
+            "description": "End frame (overrides 'end' if set)",
+            "default": null
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Fade In/Out",
+        "value": "fade",
+        "description": "Fade in or out by time or frame.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"fade=in:0:30\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"fade=out:100:25\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "type": "enum",
+            "options": [
+              "in",
+              "out"
+            ],
+            "description": "Fade direction",
+            "default": "in"
+          },
+          {
+            "name": "start_frame",
+            "type": "number",
+            "description": "Start frame (overrides start_time)",
+            "default": 0
+          },
+          {
+            "name": "duration",
+            "type": "number",
+            "description": "Duration (frames or seconds, based on usage)",
+            "default": 30
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Loop",
+        "value": "loop",
+        "description": "Loop a sequence of frames.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"loop=loop=2:size=50:start=0\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "loop",
+            "type": "number",
+            "description": "Number of repeats",
+            "default": 1
+          },
+          {
+            "name": "size",
+            "type": "number",
+            "description": "Number of frames in loop",
+            "default": 30
+          },
+          {
+            "name": "start",
+            "type": "number",
+            "description": "Starting frame",
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Time Pad",
+        "value": "tpad",
+        "description": "Pad video with freeze/repeat/black frames at the start or end.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"tpad=stop_duration=3\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "start_duration",
+            "type": "number",
+            "description": "Pad at start (seconds)",
+            "default": 0
+          },
+          {
+            "name": "stop_duration",
+            "type": "number",
+            "description": "Pad at end (seconds)",
+            "default": 3
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Temporal Mix",
+        "value": "tmix",
+        "description": "Mix a number of frames for blur or ghosting effects.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"tmix=frames=5\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "frames",
+            "type": "number",
+            "description": "Frames to mix (default 3)",
+            "default": 3
+          },
+          {
+            "name": "weights",
+            "type": "string",
+            "description": "Weights as comma-separated values",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      }
+    ]
+  },
+  {
+    "category": "Effects, Stylization, Artistic",
+    "filters": [
+      {
+        "label": "Edge Detect",
+        "value": "edgedetect",
+        "description": "Detect and outline edges in video frames.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"edgedetect=low=0.05:high=0.2:mode=colormix\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "low",
+            "type": "number",
+            "description": "Low threshold (0–1)",
+            "default": 0.1
+          },
+          {
+            "name": "high",
+            "type": "number",
+            "description": "High threshold (0–1)",
+            "default": 0.4
+          },
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "Output mode",
+            "options": [
+              "wires",
+              "colormix",
+              "canny"
+            ],
+            "default": "colormix"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Negate",
+        "value": "negate",
+        "description": "Invert (negate) all or selected color components.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"negate\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"negate=components=u+v\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "components",
+            "type": "string",
+            "description": "Components to negate (e.g., y+u+v or r+g+b)",
+            "default": "all"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Vignette",
+        "value": "vignette",
+        "description": "Add a dark or bright vignette effect to the frame.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"vignette\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"vignette=radius=0.5:strength=0.7\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "angle",
+            "type": "number",
+            "description": "Angle in radians",
+            "default": 0
+          },
+          {
+            "name": "x0",
+            "type": "number",
+            "description": "X center coordinate (0–1)",
+            "default": 0.5
+          },
+          {
+            "name": "y0",
+            "type": "number",
+            "description": "Y center coordinate (0–1)",
+            "default": 0.5
+          },
+          {
+            "name": "radius",
+            "type": "number",
+            "description": "Vignette radius (0–1)",
+            "default": 0.5
+          },
+          {
+            "name": "strength",
+            "type": "number",
+            "description": "Effect strength (0–1)",
+            "default": 0.7
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Pixelize",
+        "value": "pixelize",
+        "description": "Apply pixelation effect (mosaic).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"pixelize=size=32\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "size",
+            "type": "number",
+            "description": "Pixel block size (pixels)",
+            "default": 16
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Pseudocolor",
+        "value": "pseudocolor",
+        "description": "Assign false color mapping to grayscale image.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"pseudocolor=color0=red:color7=yellow\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "color0",
+            "type": "string",
+            "description": "Color for darkest values",
+            "default": "black"
+          },
+          {
+            "name": "color7",
+            "type": "string",
+            "description": "Color for lightest values",
+            "default": "white"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Chromakey",
+        "value": "chromakey",
+        "description": "Make a specific color transparent (green screen).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"chromakey=0x00FF00:0.1:0.2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "color",
+            "type": "string",
+            "description": "Key color (hex or name)",
+            "default": "0x00FF00"
+          },
+          {
+            "name": "similarity",
+            "type": "number",
+            "description": "Similarity threshold (0–1)",
+            "default": 0.1
+          },
+          {
+            "name": "blend",
+            "type": "number",
+            "description": "Blend value (0–1)",
+            "default": 0.2
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Chromahold",
+        "value": "chromahold",
+        "description": "Keep one color, turn the rest to grayscale.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"chromahold=color=red:similarity=0.2:blend=0.2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "color",
+            "type": "string",
+            "description": "Hold color (hex or name)",
+            "default": "red"
+          },
+          {
+            "name": "similarity",
+            "type": "number",
+            "description": "Similarity threshold (0–1)",
+            "default": 0.2
+          },
+          {
+            "name": "blend",
+            "type": "number",
+            "description": "Blend value (0–1)",
+            "default": 0.2
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Chroma Noise Reduction",
+        "value": "chromanr",
+        "description": "Reduce noise in chroma channels.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"chromanr=strength=60\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "strength",
+            "type": "number",
+            "description": "Noise reduction strength (0–255)",
+            "default": 60
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Chroma Shift",
+        "value": "chromashift",
+        "description": "Shift chroma planes (color offsets).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"chromashift=cb=2:cr=-2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "cb",
+            "type": "number",
+            "description": "Cb plane shift (px)",
+            "default": 0
+          },
+          {
+            "name": "cr",
+            "type": "number",
+            "description": "Cr plane shift (px)",
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Bounding Box",
+        "value": "bbox",
+        "description": "Visualize bounding boxes (for object/facial detection).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"bbox\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Used for diagnostics, not transformation."
+      },
+      {
+        "label": "Find Rect",
+        "value": "find_rect",
+        "description": "Detect and highlight rectangles meeting criteria.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"find_rect=threshold=0.6\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "threshold",
+            "type": "number",
+            "description": "Detection threshold (0–1)",
+            "default": 0.6
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Prewitt Edge Detect",
+        "value": "prewitt",
+        "description": "Detect edges using the Prewitt operator.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"prewitt\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Displace",
+        "value": "displace",
+        "description": "Displace pixels according to a displacement map (needs 2nd input).",
+        "examples": [
+          "ffmpeg -i in.mp4 -i map.png -filter_complex \"[0:v][1:v]displace\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "mp4",
+        "agent_notes": "Requires two video/image inputs (source, displacement map)."
+      },
+      {
+        "label": "Remap",
+        "value": "remap",
+        "description": "Warp image using external x/y mapping files.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"remap=xmap=mapx.png:ymap=mapy.png\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "xmap",
+            "type": "string",
+            "description": "X mapping file",
+            "default": ""
+          },
+          {
+            "name": "ymap",
+            "type": "string",
+            "description": "Y mapping file",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Requires two map files."
+      },
+      {
+        "label": "Perspective",
+        "value": "perspective",
+        "description": "Apply perspective transformation based on four corners.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"perspective=x0=0:y0=0:x1=1920:y1=0:x2=1920:y2=1080:x3=0:y3=1080\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "x0",
+            "type": "number",
+            "description": "Top-left x coordinate",
+            "default": 0
+          },
+          {
+            "name": "y0",
+            "type": "number",
+            "description": "Top-left y coordinate",
+            "default": 0
+          },
+          {
+            "name": "x1",
+            "type": "number",
+            "description": "Top-right x coordinate",
+            "default": 1920
+          },
+          {
+            "name": "y1",
+            "type": "number",
+            "description": "Top-right y coordinate",
+            "default": 0
+          },
+          {
+            "name": "x2",
+            "type": "number",
+            "description": "Bottom-right x coordinate",
+            "default": 1920
+          },
+          {
+            "name": "y2",
+            "type": "number",
+            "description": "Bottom-right y coordinate",
+            "default": 1080
+          },
+          {
+            "name": "x3",
+            "type": "number",
+            "description": "Bottom-left x coordinate",
+            "default": 0
+          },
+          {
+            "name": "y3",
+            "type": "number",
+            "description": "Bottom-left y coordinate",
+            "default": 1080
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Weave",
+        "value": "weave",
+        "description": "Weave two input fields into one frame.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"weave\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      }
+    ]
+  },
+  {
+    "category": "Field Operations, Deinterlace, Telecine",
+    "filters": [
+      {
+        "label": "YADIF (Yet Another DeInterlacing Filter)",
+        "value": "yadif",
+        "description": "High quality deinterlacer for interlaced video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"yadif=mode=1:parity=0:deint=1\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "Deinterlacing mode (0=auto, 1=send_frame, 2=send_field, 3=send_frame_nospatial)",
+            "options": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "default": 0
+          },
+          {
+            "name": "parity",
+            "type": "enum",
+            "description": "Field order (0=auto, 1=TFF, 2=BFF)",
+            "options": [
+              0,
+              1,
+              2
+            ],
+            "default": 0
+          },
+          {
+            "name": "deint",
+            "type": "enum",
+            "description": "Which frames to deinterlace (0=all, 1=interlaced only)",
+            "options": [
+              0,
+              1
+            ],
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "BWDIF (Bilateral Wiener Deinterlacer)",
+        "value": "bwdif",
+        "description": "High quality, fast deinterlacer.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"bwdif=mode=1:parity=0\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "Deinterlacing mode (0=send_frame, 1=send_field)",
+            "options": [
+              0,
+              1
+            ],
+            "default": 0
+          },
+          {
+            "name": "parity",
+            "type": "enum",
+            "description": "Field order (0=auto, 1=TFF, 2=BFF)",
+            "options": [
+              0,
+              1,
+              2
+            ],
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Kerndeint (Kernel Deinterlacer)",
+        "value": "kerndeint",
+        "description": "Older, customizable kernel-based deinterlacer.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"kerndeint=thresh=20:sharp=1\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "thresh",
+            "type": "number",
+            "description": "Threshold (0–255)",
+            "default": 10
+          },
+          {
+            "name": "map",
+            "type": "enum",
+            "description": "Map (0=off, 1=on)",
+            "options": [
+              0,
+              1
+            ],
+            "default": 0
+          },
+          {
+            "name": "order",
+            "type": "enum",
+            "description": "Field order (0=auto, 1=TFF, 2=BFF)",
+            "options": [
+              0,
+              1,
+              2
+            ],
+            "default": 0
+          },
+          {
+            "name": "sharp",
+            "type": "enum",
+            "description": "Sharpen (0=off, 1=on)",
+            "options": [
+              0,
+              1
+            ],
+            "default": 0
+          },
+          {
+            "name": "twoway",
+            "type": "enum",
+            "description": "Two-way (0=off, 1=on)",
+            "options": [
+              0,
+              1
+            ],
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "IL (Interleave/Deinterleave)",
+        "value": "il",
+        "description": "Interleave or deinterleave fields in a video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"il=mode=merge:parity=tff\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "Mode (merge, split)",
+            "options": [
+              "merge",
+              "split"
+            ],
+            "default": "merge"
+          },
+          {
+            "name": "parity",
+            "type": "enum",
+            "description": "Field parity (tff, bff)",
+            "options": [
+              "tff",
+              "bff"
+            ],
+            "default": "tff"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "W3FDIF (Wave 3-Field Deinterlacer)",
+        "value": "w3fdif",
+        "description": "Broadcast-grade, high quality 3-field deinterlacer.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"w3fdif=mode=frame:parity=tff\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "Mode (frame, field)",
+            "options": [
+              "frame",
+              "field"
+            ],
+            "default": "frame"
+          },
+          {
+            "name": "parity",
+            "type": "enum",
+            "description": "Parity (tff, bff)",
+            "options": [
+              "tff",
+              "bff"
+            ],
+            "default": "tff"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "MCDeint (Motion-Compensated Deinterlacer)",
+        "value": "mcdeint",
+        "description": "Very high quality, motion-compensated deinterlacing (CPU intensive).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"mcdeint=mode=medium:parity=tff\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "Speed/quality mode (fast, medium, slow, extra_slow)",
+            "options": [
+              "fast",
+              "medium",
+              "slow",
+              "extra_slow"
+            ],
+            "default": "medium"
+          },
+          {
+            "name": "parity",
+            "type": "enum",
+            "description": "Field parity (tff, bff)",
+            "options": [
+              "tff",
+              "bff"
+            ],
+            "default": "tff"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Doubleweave",
+        "value": "doubleweave",
+        "description": "Weave two fields into frames (for 'bobbing' effect).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"doubleweave\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Field",
+        "value": "field",
+        "description": "Select and output a single field from each frame.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"field=type=top\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "type": "enum",
+            "description": "Which field to output (top, bottom)",
+            "options": [
+              "top",
+              "bottom"
+            ],
+            "default": "top"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Field Order",
+        "value": "fieldorder",
+        "description": "Set or swap field order.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"fieldorder=order=bff\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "order",
+            "type": "enum",
+            "description": "Order (tff, bff)",
+            "options": [
+              "tff",
+              "bff"
+            ],
+            "default": "bff"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Fieldhint",
+        "value": "fieldhint",
+        "description": "Use external MPEG2 hint file for field matching (advanced).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"fieldhint=hint=hint.txt\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "hint",
+            "type": "string",
+            "description": "Path to hint file",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Fieldmatch",
+        "value": "fieldmatch",
+        "description": "Match fields to restore progressive frames (IVTC/inverse telecine).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"fieldmatch=order=tff:mode=pc\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "order",
+            "type": "enum",
+            "description": "Order (auto, tff, bff)",
+            "options": [
+              "auto",
+              "tff",
+              "bff"
+            ],
+            "default": "auto"
+          },
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "Matching mode (pc, pc_n, etc.)",
+            "options": [
+              "pc",
+              "pc_n"
+            ],
+            "default": "pc"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Separatefields",
+        "value": "separatefields",
+        "description": "Splits each frame into its two fields (doubles framerate, halves height).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"separatefields\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Tinterlace",
+        "value": "tinterlace",
+        "description": "Temporal interlacing (combine fields for interlaced output).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"tinterlace=mode=merge\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "Interlacing mode (merge, drop_even, drop_odd, pad, interleave, etc.)",
+            "options": [
+              "merge",
+              "drop_even",
+              "drop_odd",
+              "pad",
+              "interleave"
+            ],
+            "default": "merge"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Telecine",
+        "value": "telecine",
+        "description": "Apply 3:2 pulldown for NTSC (makes 24p look like 30i).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"telecine=pattern=23\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "pattern",
+            "type": "number",
+            "description": "Pulldown pattern (default 23 for NTSC)",
+            "default": 23
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Pullup",
+        "value": "pullup",
+        "description": "Undo telecine/pulldown, restore 24p from 30i.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"pullup\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Decimate",
+        "value": "decimate",
+        "description": "Drop duplicate frames to convert telecined or variable-fps video to progressive.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"decimate=cycle=5\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "cycle",
+            "type": "number",
+            "description": "Cycle length (default 5 for NTSC)",
+            "default": 5
+          },
+          {
+            "name": "dupthresh",
+            "type": "number",
+            "description": "Duplicate threshold",
+            "default": 1.1
+          },
+          {
+            "name": "scthresh",
+            "type": "number",
+            "description": "Scene change threshold",
+            "default": 15
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      }
+    ]
+  },
+  {
+    "category": "Subtitles, Metadata, Info",
+    "filters": [
+      {
+        "label": "Subtitles",
+        "value": "subtitles",
+        "description": "Burns subtitles (SRT, ASS, etc.) into video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"subtitles=example.srt\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"subtitles=example.srt:fontsdir=/path/to/fonts\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "filename",
+            "type": "string",
+            "description": "Subtitle file path (.srt, .ass, etc.)",
+            "default": ""
+          },
+          {
+            "name": "fontsdir",
+            "type": "string",
+            "description": "Path to fonts directory for ASS/SSA.",
+            "default": ""
+          },
+          {
+            "name": "original_size",
+            "type": "string",
+            "description": "Original video size, e.g. 1280x720.",
+            "default": ""
+          },
+          {
+            "name": "charenc",
+            "type": "string",
+            "description": "Subtitle file character encoding (e.g., UTF-8).",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Requires one video and one subtitle file. Supports .srt, .ass, and other common subtitle formats."
+      },
+      {
+        "label": "ASS (Advanced SubStation Alpha)",
+        "value": "ass",
+        "description": "Burns ASS/SSA subtitles with advanced formatting.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"ass=example.ass\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "filename",
+            "type": "string",
+            "description": "Subtitle file path (.ass)",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Showinfo",
+        "value": "showinfo",
+        "description": "Prints frame information as overlay and to logs.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"showinfo\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Signalstats",
+        "value": "signalstats",
+        "description": "Displays video signal statistics (Y, U, V, etc.).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"signalstats=stat=all\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "stat",
+            "type": "string",
+            "description": "Which stats to show (all, brng, y, u, v, etc.)",
+            "default": "all"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Graphmonitor",
+        "value": "graphmonitor",
+        "description": "Visualizes graph execution and timeline for debugging FFmpeg pipelines.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"graphmonitor\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Showwaves",
+        "value": "showwaves",
+        "description": "Visualizes the audio waveform over time as video.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"showwaves=s=1280x200:mode=line:colors=blue\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "s",
+            "type": "string",
+            "description": "Image size (e.g., 1280x720).",
+            "default": "1280x720"
+          },
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "Waveform mode (line, point, cline).",
+            "options": [
+              "line",
+              "point",
+              "cline"
+            ],
+            "default": "line"
+          },
+          {
+            "name": "n",
+            "type": "number",
+            "description": "Number of samples.",
+            "default": 0
+          },
+          {
+            "name": "colors",
+            "type": "string",
+            "description": "Waveform color(s).",
+            "default": "blue"
+          }
+        ],
+        "ffmpeg_type": "both",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Showwavespic",
+        "value": "showwavespic",
+        "description": "Creates a static picture of the audio waveform.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"showwavespic=s=1280x200:colors=red\" out.png"
+        ],
+        "parameters": [
+          {
+            "name": "s",
+            "type": "string",
+            "description": "Image size (e.g., 1280x720).",
+            "default": "1280x720"
+          },
+          {
+            "name": "colors",
+            "type": "string",
+            "description": "Waveform color(s).",
+            "default": "red"
+          }
+        ],
+        "ffmpeg_type": "audio",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "png"
+      },
+      {
+        "label": "Showspectrum",
+        "value": "showspectrum",
+        "description": "Visualizes the audio spectrum (frequency over time).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"showspectrum=s=hd720:color=intensity\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "s",
+            "type": "string",
+            "description": "Image size (e.g., hd720, 1920x1080).",
+            "default": "hd720"
+          },
+          {
+            "name": "color",
+            "type": "string",
+            "description": "Spectrum color map (e.g., intensity).",
+            "default": "intensity"
+          },
+          {
+            "name": "mode",
+            "type": "string",
+            "description": "Mode (combined, separate, etc.).",
+            "default": "combined"
+          },
+          {
+            "name": "slide",
+            "type": "string",
+            "description": "Slide (scroll, frame, replace).",
+            "default": "scroll"
+          },
+          {
+            "name": "scale",
+            "type": "string",
+            "description": "dB scale (lin, log, sqrt).",
+            "default": "lin"
+          },
+          {
+            "name": "legend",
+            "type": "boolean",
+            "description": "Show legend.",
+            "default": true
+          }
+        ],
+        "ffmpeg_type": "audio",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Showspectrumpic",
+        "value": "showspectrumpic",
+        "description": "Creates a static picture of the audio spectrum.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"showspectrumpic=s=1024x512\" out.png"
+        ],
+        "parameters": [
+          {
+            "name": "s",
+            "type": "string",
+            "description": "Image size.",
+            "default": "1024x512"
+          }
+        ],
+        "ffmpeg_type": "audio",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "png"
+      },
+      {
+        "label": "PSNR",
+        "value": "psnr",
+        "description": "Calculates Peak Signal-to-Noise Ratio between two video inputs (quality metric).",
+        "examples": [
+          "ffmpeg -i original.mp4 -i compressed.mp4 -filter_complex \"psnr\" -f null -"
+        ],
+        "parameters": [
+          {
+            "name": "stats_file",
+            "type": "string",
+            "description": "Path to save stats/log results.",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "txt",
+        "agent_notes": "Requires two video inputs—original and processed/compare target."
+      },
+      {
+        "label": "SSIM",
+        "value": "ssim",
+        "description": "Calculates Structural Similarity Index between two video inputs (quality metric).",
+        "examples": [
+          "ffmpeg -i original.mp4 -i compressed.mp4 -filter_complex \"ssim\" -f null -"
+        ],
+        "parameters": [
+          {
+            "name": "stats_file",
+            "type": "string",
+            "description": "Path to save stats/log results.",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "txt"
+      },
+      {
+        "label": "Metadata",
+        "value": "metadata",
+        "description": "Set or extract metadata (title, author, etc.). Not a video filter—used as a global FFmpeg option.",
+        "examples": [
+          "ffmpeg -i in.mp4 -metadata title=\"Cool Video\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "key",
+            "type": "string",
+            "description": "Metadata key (e.g., title, author).",
+            "default": ""
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "description": "Metadata value.",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Not an actual filter—should be handled as -metadata key=value global option."
+      },
+      {
+        "label": "Pixscope",
+        "value": "pixscope",
+        "description": "Visualizes individual pixel values as a grid.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"pixscope=s=8x8\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "s",
+            "type": "string",
+            "description": "Grid size, e.g. 8x8.",
+            "default": "8x8"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Pixdesctest",
+        "value": "pixdesctest",
+        "description": "Generates a visual test pattern for pixel formats.",
+        "examples": [
+          "ffmpeg -f lavfi -i pixdesctest -t 10 out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 0,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Datascope",
+        "value": "datascope",
+        "description": "Displays video as a scrolling matrix of data/hex.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"datascope=size=640x360\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "size",
+            "type": "string",
+            "description": "Size of datascope matrix (e.g. 640x360).",
+            "default": "640x360"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      }
+    ]
+  },
+  {
+    "category": "Selection, Masking, Utility",
+    "filters": [
+      {
+        "label": "Select",
+        "value": "select",
+        "description": "Select frames to keep/discard using an expression.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"select='not(mod(n,10))'\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "expr",
+            "type": "string",
+            "description": "FFmpeg expression, e.g. not(mod(n,10))",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Useful for decimation, extracting certain frames, automation."
+      },
+      {
+        "label": "Split",
+        "value": "split",
+        "description": "Split a stream into two or more identical outputs for further parallel processing.",
+        "examples": [
+          "ffmpeg -i in.mp4 -filter_complex \"[0:v]split=2[out1][out2]\" ..."
+        ],
+        "parameters": [
+          {
+            "name": "outputs",
+            "type": "number",
+            "description": "Number of output streams.",
+            "default": 2
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 1,
+        "complex_filter": true,
+        "default_extension": "mp4",
+        "agent_notes": "Used inside filter_complex. Needed when forking video streams for parallel processing."
+      },
+      {
+        "label": "Shuffle Frames",
+        "value": "shuffleframes",
+        "description": "Rearrange or shuffle frames by an explicit pattern.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"shuffleframes=map='3 2 1 0'\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "map",
+            "type": "string",
+            "description": "List of output frame order, e.g. '3 2 1 0'",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Stream Select",
+        "value": "streamselect",
+        "description": "Select specific streams from a multi-stream input (audio/video/subs).",
+        "examples": [
+          "ffmpeg -i in.mkv -filter_complex \"streamselect=map=1\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "map",
+            "type": "string",
+            "description": "Stream mapping (e.g., map=0 2)",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "both",
+        "supports_streams": true,
+        "required_files": 1,
+        "complex_filter": true,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "SendCmd",
+        "value": "sendcmd",
+        "description": "Send commands to filters dynamically at runtime (automation, triggers, scripting).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"sendcmd='0.5 drawbox x=10 y=20 w=100 h=50'\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "commands",
+            "type": "string",
+            "description": "FFmpeg command string or file path.",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Advanced automation; can control other filters in pipeline."
+      },
+      {
+        "label": "Alphamerge",
+        "value": "alphamerge",
+        "description": "Merge alpha (transparency) plane from a second input onto first.",
+        "examples": [
+          "ffmpeg -i rgb.mp4 -i alpha.mp4 -filter_complex \"[0][1]alphamerge\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 2,
+        "complex_filter": true,
+        "default_extension": "mp4",
+        "agent_notes": "Input 0: color; Input 1: alpha channel."
+      },
+      {
+        "label": "Maskfun",
+        "value": "maskfun",
+        "description": "Apply a logic/math expression to mask data between streams.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"maskfun=expr='if(gte(val,128),255,0)'\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "expr",
+            "type": "string",
+            "description": "Logic or math expression.",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Maskedmerge / Maskedmax / Maskedmin / Maskedclamp",
+        "value": "maskedmerge",
+        "description": "Merge, limit, or clamp two streams using a third mask stream.",
+        "examples": [
+          "ffmpeg -i a.mp4 -i b.mp4 -i mask.mp4 -filter_complex \"[0][1][2]maskedmerge\" out.mp4",
+          "ffmpeg -i a.mp4 -i b.mp4 -i mask.mp4 -filter_complex \"[0][1][2]maskedmax\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 3,
+        "complex_filter": true,
+        "default_extension": "mp4",
+        "agent_notes": "Requires three inputs: main, secondary, mask."
+      },
+      {
+        "label": "Null",
+        "value": "null",
+        "description": "Pass-through; does nothing to the input.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"null\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "both",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Alias: 'identity'"
+      },
+      {
+        "label": "Copy (codec)",
+        "value": "copy",
+        "description": "Not a filter; stream copy mode. No re-encoding.",
+        "examples": [
+          "ffmpeg -i in.mp4 -c copy out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "both",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Use as -c copy on command, not a filter. For reference only."
+      },
+      {
+        "label": "Format",
+        "value": "format",
+        "description": "Convert video pixel format (e.g., yuv420p, rgb24, gray, etc.).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"format=yuv420p\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "pix_fmts",
+            "type": "string",
+            "description": "Target pixel format.",
+            "default": "yuv420p"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Perms",
+        "value": "perms",
+        "description": "Set or change permissions/flags on frame data.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"perms=mode=read\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "type": "string",
+            "description": "Permission mode (read, write, etc.)",
+            "default": "read"
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Noformat",
+        "value": "noformat",
+        "description": "Remove explicit video format (returns to unformatted/raw).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"noformat\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Identity",
+        "value": "identity",
+        "description": "No-op; output equals input (alias for null).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"identity\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "both",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Flip / SwapUV / SwapRect",
+        "value": "swapuv",
+        "description": "Flip: alias for vflip. SwapUV: swap chroma planes. SwapRect: swap two regions.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"swapuv\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"swaprect=w=100:h=100:x1=0:y1=0:x2=200:y2=200\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "w",
+            "type": "number",
+            "description": "Region width (swaprect only).",
+            "default": 0
+          },
+          {
+            "name": "h",
+            "type": "number",
+            "description": "Region height (swaprect only).",
+            "default": 0
+          },
+          {
+            "name": "x1",
+            "type": "number",
+            "description": "Region 1 x-coordinate (swaprect only).",
+            "default": 0
+          },
+          {
+            "name": "y1",
+            "type": "number",
+            "description": "Region 1 y-coordinate (swaprect only).",
+            "default": 0
+          },
+          {
+            "name": "x2",
+            "type": "number",
+            "description": "Region 2 x-coordinate (swaprect only).",
+            "default": 0
+          },
+          {
+            "name": "y2",
+            "type": "number",
+            "description": "Region 2 y-coordinate (swaprect only).",
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "parameter_groups": [
+          {
+            "group_name": "swaprect",
+            "parameters": [
+              "w",
+              "h",
+              "x1",
+              "y1",
+              "x2",
+              "y2"
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Separatefields / Mergeplanes / Repeatfields",
+        "value": "separatefields",
+        "description": "separatefields: Split frames into two fields. mergeplanes: merge color planes from inputs. repeatfields: duplicate fields.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"separatefields\" out.mp4",
+          "ffmpeg -i a.mp4 -i b.mp4 -filter_complex \"[0][1]mergeplanes=map=0-0|1-1|1-2\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"repeatfields\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "map",
+            "type": "string",
+            "description": "Plane mapping (mergeplanes only).",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": true,
+        "required_files": 1,
+        "complex_filter": true,
+        "default_extension": "mp4",
+        "parameter_groups": [
+          {
+            "group_name": "mergeplanes",
+            "parameters": [
+              "map"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Miscellaneous / Advanced",
+    "filters": [
+      {
+        "label": "Deshake",
+        "value": "deshake",
+        "description": "Removes small camera shakes (video stabilization).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"deshake=x=16:y=8:rx=5:ry=5\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "x",
+            "type": "number",
+            "description": "Maximum x translation (px)",
+            "default": 16
+          },
+          {
+            "name": "y",
+            "type": "number",
+            "description": "Maximum y translation (px)",
+            "default": 16
+          },
+          {
+            "name": "w",
+            "type": "number",
+            "description": "Block size (px)",
+            "default": 8
+          },
+          {
+            "name": "h",
+            "type": "number",
+            "description": "Block size (px)",
+            "default": 8
+          },
+          {
+            "name": "rx",
+            "type": "number",
+            "description": "Max rotation (degrees)",
+            "default": 0
+          },
+          {
+            "name": "ry",
+            "type": "number",
+            "description": "Max rotation (degrees)",
+            "default": 0
+          },
+          {
+            "name": "edge",
+            "type": "enum",
+            "description": "Edge fill method",
+            "default": "blank",
+            "options": [
+              "blank",
+              "original"
+            ]
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "Great for phone/gopro stabilization. Set translation/rotation low for best results."
+      },
+      {
+        "label": "Delogo",
+        "value": "delogo",
+        "description": "Removes logos/watermarks from videos.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"delogo=x=100:y=50:w=120:h=60\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "x",
+            "type": "number",
+            "description": "Logo X position (px)",
+            "default": 0
+          },
+          {
+            "name": "y",
+            "type": "number",
+            "description": "Logo Y position (px)",
+            "default": 0
+          },
+          {
+            "name": "w",
+            "type": "number",
+            "description": "Logo width (px)",
+            "default": 100
+          },
+          {
+            "name": "h",
+            "type": "number",
+            "description": "Logo height (px)",
+            "default": 50
+          },
+          {
+            "name": "show",
+            "type": "boolean",
+            "description": "Show debug overlay",
+            "default": false
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "removelogo filter is similar but requires a PGM mask file; advanced users only."
+      },
+      {
+        "label": "Deflicker",
+        "value": "deflicker",
+        "description": "Removes flicker from videos (old footage, lighting issues).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"deflicker=mode=mean:size=5\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "type": "enum",
+            "description": "Method",
+            "default": "mean",
+            "options": [
+              "mean",
+              "median",
+              "pm"
+            ]
+          },
+          {
+            "name": "size",
+            "type": "number",
+            "description": "Window size",
+            "default": 5
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Derain",
+        "value": "derain",
+        "description": "Removes rain streaks (deep learning filter; may require custom build).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"derain\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Dejudder",
+        "value": "dejudder",
+        "description": "Reduces motion judder in videos.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"dejudder\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Advanced Denoise",
+        "value": "atadenoise",
+        "description": "Denoising filters: atadenoise, bilateral, hqdn3d, nlmeans, dctdnoiz, bitplanenoise.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"atadenoise\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"nlmeans=s=2:r=4:p=7\" out.mp4"
+        ],
+        "parameters": [],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "See Blur/Denoise section for full parameter documentation for each filter."
+      },
+      {
+        "label": "DNN Detect",
+        "value": "dnn_detect",
+        "description": "AI/ML deep neural network object detection.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"dnn_detect=model=face-detection.onnx:backend=onnx\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "type": "string",
+            "description": "Model path/file",
+            "default": ""
+          },
+          {
+            "name": "backend",
+            "type": "string",
+            "description": "Backend engine (e.g., onnx, native)",
+            "default": "onnx"
+          },
+          {
+            "name": "input",
+            "type": "string",
+            "description": "Input node (optional)",
+            "default": ""
+          },
+          {
+            "name": "output",
+            "type": "string",
+            "description": "Output node (optional)",
+            "default": ""
+          },
+          {
+            "name": "labels",
+            "type": "string",
+            "description": "Labels file (optional)",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "dnn_processing filter is similar for running other models."
+      },
+      {
+        "label": "LUT Transforms",
+        "value": "lut3d",
+        "description": "Apply color grading using LUTs (lut, lutrgb, lut1d, lut2, lut3d, lutyuv, haldclut).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"lut3d=file=mygrade.cube\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"haldclut\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "type": "string",
+            "description": "LUT file (.cube, .3dl, etc.)",
+            "default": ""
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Random",
+        "value": "random",
+        "description": "Add pseudo-random noise or effects.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"random=strength=0.2:seed=42\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "strength",
+            "type": "number",
+            "description": "Noise/effect strength",
+            "default": 0.2
+          },
+          {
+            "name": "seed",
+            "type": "number",
+            "description": "Random seed",
+            "default": 0
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "MPDecimate",
+        "value": "mpdecimate",
+        "description": "Drop near-duplicate frames (e.g., for animation cleanup).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"mpdecimate=max=30:hi=64:lo=32:frac=0.33\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "max",
+            "type": "number",
+            "description": "Max difference",
+            "default": 30
+          },
+          {
+            "name": "hi",
+            "type": "number",
+            "description": "High threshold",
+            "default": 64
+          },
+          {
+            "name": "lo",
+            "type": "number",
+            "description": "Low threshold",
+            "default": 32
+          },
+          {
+            "name": "frac",
+            "type": "number",
+            "description": "Fraction threshold",
+            "default": 0.33
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "QP",
+        "value": "qp",
+        "description": "Set quantizer for each frame (advanced encoding tuning).",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"qp=20\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "qp",
+            "type": "number",
+            "description": "Quantizer parameter (1–51)",
+            "default": 20
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4"
+      },
+      {
+        "label": "Super Resolution / Upscale",
+        "value": "sr",
+        "description": "Deep learning super-resolution, pixel art upscalers.",
+        "examples": [
+          "ffmpeg -i in.mp4 -vf \"sr=model=EDSR\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"super2xsai\" out.mp4",
+          "ffmpeg -i in.mp4 -vf \"xbr=2\" out.mp4"
+        ],
+        "parameters": [
+          {
+            "name": "model",
+            "type": "string",
+            "description": "Model name (for sr)",
+            "default": ""
+          },
+          {
+            "name": "n",
+            "type": "number",
+            "description": "Scale factor (xbr only)",
+            "default": 2
+          }
+        ],
+        "ffmpeg_type": "video",
+        "supports_streams": false,
+        "required_files": 1,
+        "complex_filter": false,
+        "default_extension": "mp4",
+        "agent_notes": "super2xsai/xbr for pixel art; sr for AI upscaling (model required)."
+      }
+    ]
+  }
+]
