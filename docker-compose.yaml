@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  ffmpeg-backend:
+    build: ./ffmpeg-backend
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./ffmpeg-backend:/app
+    environment:
+      - FLASK_ENV=development
+
+  ffmpeg-frontend:
+    build: ./ffmpeg-frontend
+    ports:
+      - "8080:8080"
+      - "8300:8300"
+    volumes:
+      - ./ffmpeg-frontend:/app
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - ffmpeg-backend
