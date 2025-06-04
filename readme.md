@@ -11,6 +11,8 @@ This monorepo contains an MCP server for agentic video editing. It also powers a
 You’ll need **Node.js**, **npm** (or pnpm/yarn), and **Python 3.12+** (with `pip`).  
 These instructions assume a Unix-like OS (Mac/Linux), but should be adaptable for Windows.
 
+Docker instructions below. 
+
 ---
 
 ### Clone the Repo
@@ -78,6 +80,26 @@ python ollamarun.py
 - qwen2.5-coder:latest
 - firefunction-v2:latest
 - llama4:scout
+
+---
+
+
+## Running with Docker (Optional)
+
+If you want everything to "just work" via Docker:
+
+Build and run both back-end servers with Docker Compose (from repo root):
+
+   docker-compose up --build
+
+The following ports will be available:
+
+Frontend (Vite): http://localhost:8080/
+Node API server: http://localhost:8300/
+Python FFmpeg backend: http://localhost:8200/
+
+You can still use npm run dev/python main.py for local dev if you prefer.
+Note: The Docker setup mounts local source code, so edits will live-reload in most setups.
 
 ---
 
