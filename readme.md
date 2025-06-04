@@ -16,24 +16,24 @@ Docker instructions below.
 
 ## Clone the Repo
 
-From your root coding project directory
-git clone https://github.com/hyepartners-gmail/vibevideo-mcp.git
-cd vibevideo-mcp
+- From your root coding project directory
+- git clone https://github.com/hyepartners-gmail/vibevideo-mcp.git
+- cd vibevideo-mcp
 
 ### Install the ffmpeg-backend components
 
-cd ffmpeg-backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+- cd ffmpeg-backend
+- python3 -m venv .venv
+- source .venv/bin/activate
+- pip install -r requirements.txt
 
 ### If you don't have ffmpeg installed
-pip install ffmpeg
+- pip install ffmpeg
 
 ### Install the ffmpeg-frontend components
 
-cd ffmpeg-frontend
-npm install
+- cd ffmpeg-frontend
+- npm install
 
 
 ---
