@@ -46,7 +46,7 @@ The project includes **three main servers**:
 - **Dev:** Runs on Vite 
 - **For:** User front-end that gives you access to all of the video editing tools
 - **Run:** (This launches *both* the React front-end and Node back-end in dev mode) 
-npm run dev
+- npm run dev
 
 ---
 
@@ -59,14 +59,14 @@ npm run dev
 - **URL:** http://127.0.0.1:8200
 - **For:** Flask App handles all ffmpeg-powered media processing jobs
 - **Run:**  
-python main.py
+- python main.py
 
 ---
 
 ### 4. Python Agent (Ollama Runner)
 - A simple Ollama agent running locally, for making one request at a time, media edits in natural language
 - **Run:**  
-python ollamarun.py
+- python ollamarun.py
 
 **Suggested Models (must have function calling/tools):**
 - command-r7b:latest
@@ -109,7 +109,7 @@ Note: The Docker setup mounts local source code, so edits will live-reload in mo
 1. Better Timeline editing, Get Render working
 2. Dashboard Metrics / Run counts
 3. Connector to CrewAI
-4. MCP for some of the not-ffmpeg filters
+4. MCP for some of the non-ffmpeg filters
 
 ---
 
