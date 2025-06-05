@@ -12,6 +12,9 @@ You’ll need **Node.js**, **npm** (or pnpm/yarn), and **Python 3.12+** (with `p
 These instructions assume a Unix-like OS (Mac/Linux), but should be adaptable for Windows.
 Docker instructions below. 
 
+- Start the Python backend first (main.py)
+- Then start the Node backend (npm run dev in ffmpeg-frontend)
+- Then run the Python agent (ollamarun.py) for natural language jobs
 ---
 
 ## Clone the Repo
@@ -126,3 +129,30 @@ Open use. Attribution requested, not required.
 For issues, improvements, or collaboration, visit [www.hyepartners.com](https://www.hyepartners.com).
 
 ---
+
+## Common Problems & Fixes
+### 1. Can’t find requirements.txt or Dockerfile?
+- These files are present in the repo under ffmpeg-backend/ and ffmpeg-frontend/.
+
+- If you don’t see them, make sure you’ve done a fresh git pull or git clone from the latest branch.
+
+- If issues persist, check your local .gitignore or .git/info/exclude for accidental blocks.
+
+### 2. Flask or Other Python Dependency Errors?
+- If pip install -r requirements.txt fails with missing modules (like Flask), open requirements.txt and manually add any missing packages.
+
+- Run pip install -r requirements.txt again.
+
+### 3. Node.js Import Error with JSON Files?
+- If you get SyntaxError: Unexpected identifier 'assert', you need "type": "module" in your package.json, and Node.js >= 17.5+.
+
+- For maximum compatibility, use require() instead of import for JSON in server files, or convert the file to CommonJS if needed.
+
+### 4. Order of Startup
+- Python Backend (main.py) — must be running before the Node.js server.
+
+- Node.js Frontend/Backend (npm run dev) — launches both client and API server.
+
+- Python Agent (ollamarun.py) — optional, for natural language commands.
+
+- Docker Compose — launches all together.

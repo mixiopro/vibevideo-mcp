@@ -6,9 +6,12 @@ import multer from "multer";
 import path from "path";
 
 // Import your MCP generator functions and data here.
-import availableFiltersData from "./src/data/ffmpegFilters.json" assert { type: "json" };
-import availableAudioFiltersData from "./src/data/audioFilters.json" assert { type: "json" };
-import toolDescriptions from "./src/data/toolDescriptions.json" assert { type: "json" };
+// import availableFiltersData from "./src/data/ffmpegFilters.json" assert { type: "json" };
+// import availableAudioFiltersData from "./src/data/audioFilters.json" assert { type: "json" };
+// import toolDescriptions from "./src/data/toolDescriptions.json" assert { type: "json" };
+const availableFiltersData = require("./src/data/ffmpegFilters.json");
+const availableAudioFiltersData = require("./src/data/audioFilters.json");
+const toolDescriptions = require("./src/data/toolDescriptions.json");
 
 import { generateTrimCommand, generateJoinCommandExample } from "./src/mcp/MediaClipJoin.js";
 import { generateFrameRateCommand } from "./src/mcp/frameRateChanger.js";
